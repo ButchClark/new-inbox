@@ -40,8 +40,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    messages: state.messages,
-    unreadMessages: state.unreadMessages
+    messages: state.default.messages,
+    unreadMessages: state.default.unreadMessages
 })
 
 export default connect(

@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 const MyHeader = ({unreadMessages}) => {
-
+console.log('MyHeader> unreadMessages', unreadMessages)
     return (
         <div>
             <h1>UnreadMessages: {unreadMessages}</h1>
@@ -10,9 +10,12 @@ const MyHeader = ({unreadMessages}) => {
     )
 }
 
-const mapStateToProps = state => ({
-    unreadMessages: state.unreadMessages
-})
+const mapStateToProps = state => {
+    console.log(`MyHeader.mapStateToProps: ${state}`)
+    debugger
+    return {
+    unreadMessages: state.default.unreadMessages
+}}
 
 export default connect(
     mapStateToProps,
