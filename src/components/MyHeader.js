@@ -14,7 +14,7 @@ const mapStateToProps = state => {
     console.log(`MyHeader.mapStateToProps: ${state}`)
     debugger
     return {
-    unreadMessages: state.default.unreadMessages
+    unreadMessages: state.unreadMessages
 }}
 
 export default connect(

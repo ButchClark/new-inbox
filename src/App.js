@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import MyHeader from './components/MyHeader'
 import Messages from './components/Messages'
+import Toolbar from './components/Toolbar'
 import {connect} from 'react-redux'
 
 export const AllSelected = 1
@@ -24,6 +25,9 @@ class App extends Component {
                     <MyHeader/>
                 </div>
                 <div>
+                    <Toolbar   />
+                </div>
+                <div>
                     ComposeMessage here...
                 </div>
                 <div>
@@ -40,8 +44,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    messages: state.default.messages,
-    unreadMessages: state.default.unreadMessages
+    messages: state.messages,
+    unreadMessages: state.unreadMessages
 })
 
 export default connect(

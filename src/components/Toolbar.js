@@ -10,7 +10,8 @@ const Toolbar = ({
                  }) => {
 
     console.log(`> Toolbar - unreadMessages: ${unreadMessages}`)
-    console.dir(unreadMessages)
+    console.log(`> Toolbar - selectedStyle : ${selectedStyle}`)
+
     const handler = (e) =>{
         console.log(`> Toolbar.handler - e: `)
         console.dir(e.target)

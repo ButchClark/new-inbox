@@ -1,6 +1,7 @@
 export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED'
 export const UNREAD_MESSAGES = 'UNREAD_MESSAGES'
 export const INCREMENT_UNREAD_MESSAGES = 'INCREMENT_UNREAD_MESSAGES'
+export const SELECTED_STYLE = "SELECTED_STYLE"
 
 export function getMessages() {
     console.log("> actions.getMessages()")
@@ -25,6 +26,17 @@ export function unreadMessageCount(howMany){
         dispatch({
             type: UNREAD_MESSAGES,
             unreadMessages: howMany
+        })
+    }
+}
+
+export function setSelectedStyle(style){
+    console.log(`> actions.setSelectedStyle for style: ${style}`)
+
+    return async (dispatch) => {
+        dispatch({
+            type: SELECTED_STYLE,
+            selectedStyle: style
         })
     }
 }

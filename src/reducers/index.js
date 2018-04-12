@@ -1,33 +1,43 @@
-import {combineReducers} from 'redux'
-import {INCREMENT_UNREAD_MESSAGES, MESSAGES_RECEIVED, UNREAD_MESSAGES} from "../actions";
+import {
+    INCREMENT_UNREAD_MESSAGES,
+    MESSAGES_RECEIVED,
+    UNREAD_MESSAGES,
+    SELECTED_STYLE
+} from "../actions";
 import {NoneSelected} from "../App";
 
 const initialState = {
-    messages: [],
-    unreadMessages: 3,
-    selectedStyle: NoneSelected
+    messages: {
+        messages: [],
+        selectedStyle: NoneSelected
+    },
+    unreadMessages: 0
 }
 
-function messages( state = initialState, action){
-    console.log(`> reducers.messages- state: ${JSON.stringify(state)}`)
-    switch(action.type){
+export function messages(state = initialState, action) {
+    switch (action.type) {
         case MESSAGES_RECEIVED:
-            console.log(`> reducers.messages: action.type: ${action.type}`)
             return action.messages
 
+        case SELECTED_STYLE:
+            return {
+                ...state,
+                messages: {
+                    ...messages,
+                    selectedStyle: action.selectedStyle
+                }
+            }
         default:
-            console.log(`> reducers.messages: action.type: ${action.type}`)
             return state
     }
 }
-function unreadMessages( state = initialState, action){
-    console.log(`> reducers.unreadMessages: action: ${action.unreadMessages}`)
-    switch(action.type){
+
+export function unreadMessages(state = initialState, action) {
+    switch (action.type) {
         case UNREAD_MESSAGES:
             return action.unreadMessages
 
         case INCREMENT_UNREAD_MESSAGES:
-            console.log('>reducer.INCREMENT_UNREAD_MESSAGES')
             return state.unreadMessages + 1
 
         default:
@@ -35,7 +45,9 @@ function unreadMessages( state = initialState, action){
     }
 
 }
-export default combineReducers({
-    messages,
-    unreadMessages
-})
+
+// NOTE:  This added a level in state called "default" - ie, state.default.messages.messages...
+// export default combineReducers({
+//     messages,
+//     unreadMessages
+// })

@@ -6,16 +6,12 @@ import registerServiceWorker from './registerServiceWorker';
 import {getMessages} from './actions/index'
 import {Provider} from 'react-redux'
 import store from './store'
-import {unreadMessageCount} from "./actions";
+import {AllSelected,SomeSelected,NoneSelected} from "./App";
+import {unreadMessageCount,setSelectedStyle} from "./actions";
 
 store.dispatch(getMessages())
-    .then((x) => {
-        console.log("got back resolved from getMessages()")
-    })
 store.dispatch(unreadMessageCount(9))
-    .then((X) => {
-        console.log("got back resolved from unreadMessageCount()")
-    })
+store.dispatch(setSelectedStyle(NoneSelected))
 
 ReactDOM.render(
     <Provider store={store}>
