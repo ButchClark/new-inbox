@@ -1,24 +1,28 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {AllSelected,SomeSelected,NoneSelected} from "../App";
+import {AllSelected, SomeSelected, NoneSelected} from "../App";
 import {INCREMENT_UNREAD_MESSAGES, toggleShowCompose} from "../actions";
 
 const Toolbar = ({
                      selectedStyle,
                      unreadMessages,
-                    unreadMessagesHandler
+                     toggleShowCompose
                  }) => {
 
-    console.log(`> Toolbar - unreadMessages: ${unreadMessages}`)
-    console.log(`> Toolbar - selectedStyle : ${selectedStyle}`)
+    // console.log(`> Toolbar - unreadMessages: ${unreadMessages}`)
+    // console.log(`> Toolbar - selectedStyle : ${selectedStyle}`)
+    console.log(`> Toolbar - toggleShowCompose:`)
+    console.dir(toggleShowCompose)
 
-    const handler = (e) =>{
+    const doToggle = (e) =>{
+        console.log(" .. Toolbar.doToggle")
+        console.dir(toggleShowCompose)
+        toggleShowCompose()
+        console.log(" .. Toolbar.doToggle - after calling toggleShowCompose()")
+    }
+    const handler = (e) => {
         console.log(`> Toolbar.handler - e: `)
         console.dir(e.target)
-        let x = unreadMessagesHandler()
-        console.log(`incrementUnreadMessages sent back: ${x}`)
-        x()
-        console.log('after x()')
     }
     let disableThem = false
 
@@ -50,31 +54,45 @@ const Toolbar = ({
                     <span className="badge badge">{unreadMessages}</span>
                     <i className="xxx">unread message{unreadMessages === 1 ? "" : "s"}</i>
                 </p>
-                <a className="btn btn-danger" onClick={(e)=>{handler(e)}}>
+                <a className="btn btn-danger" onClick={doToggle} >
                     <i className="fa fa-plus"></i>
                 </a>
-                <button className="btn btn-default" onClick={(e)=>{handler(e)}}>
+                <button className="btn btn-default" onClick={(e) => {
+                    handler(e)
+                }}>
                     <i className={selectedFormat}></i>
                 </button>
 
-                <button {...markAsProps} onClick={(e)=>{handler(e)}}>Mark As Read</button>
-                <button {...markAsProps} onClick={(e) => {handler(e)}}>Mark As Unread</button>
+                <button {...markAsProps} onClick={(e) => {
+                    handler(e)
+                }}>Mark As Read
+                </button>
+                <button {...markAsProps} onClick={(e) => {
+                    handler(e)
+                }}>Mark As Unread
+                </button>
 
-                <select {...selectProps} onChange={(e) => { handler(e) }}>
+                <select {...selectProps} onChange={(e) => {
+                    handler(e)
+                }}>
                     <option>Apply label</option>
                     <option value="dev">dev</option>
                     <option value="personal">personal</option>
                     <option value="gschool">gschool</option>
                 </select>
 
-                <select {...selectProps} onChange={(e)=>{handler(e)}}>
+                <select {...selectProps} onChange={(e) => {
+                    handler(e)
+                }}>
                     <option>Remove label</option>
                     <option value="dev">dev</option>
                     <option value="personal">personal</option>
                     <option value="gschool">gschool</option>
                 </select>
 
-                <button {...markAsProps} onClick={(e)=>{handler(e)}}>
+                <button {...markAsProps} onClick={(e) => {
+                    handler(e)
+                }}>
                     <i className="fa fa-trash-o"></i>
                 </button>
             </div>
@@ -87,12 +105,13 @@ const mapStateToProps = (state) => {
     console.dir(state)
 
     return {
-    selectedStyle: state.display.selectedStyle,
-    unreadMessages: state.display.unreadMessages
-}}
+        selectedStyle: state.display.selectedStyle,
+        unreadMessages: state.display.unreadMessages
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-        toggleShowCompose: toggleShowCompose
+    toggleShowCompose: toggleShowCompose,
 })
 
 export default connect(

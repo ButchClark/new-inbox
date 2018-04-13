@@ -29,6 +29,7 @@ export function messages(state = initialState, action) {
 }
 
 export function display(state = initialState, action) {
+    console.log(`-Reducer.display-action.type: ${action.type}`)
     switch (action.type) {
         case UNREAD_MESSAGES:
             console.log(`reducer.UNREAD_MESSAGES: state:`)
