@@ -93,7 +93,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
         toggleShowCompose: toggleShowCompose
-}
+})
 
 export default connect(
     mapStateToProps,

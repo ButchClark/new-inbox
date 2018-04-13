@@ -1,10 +1,52 @@
 import React from 'react'
 
-const Message = ({message}) => {
-    let rowFormat = "row message "
-    rowFormat += message.read? "read " : "unread "
-    rowFormat += message.selected === true? "checked " : ""
 
+const selectMessageHandler = (e, selectHandler) => {
+    // The following preventDefault() was breaking the normal
+    //  checkbox event handling.
+    // e.preventDefault()
+    console.log(`Message.selectMessageHandler - calling selectHandler( ${e.currentTarget.value} )`)
+    console.log(' .. selectHandler is...')
+    console.dir(selectHandler)
+    selectHandler({messageId: e.currentTarget.value})
+}
+const toggleStar = () =>{
+    console.log("Toggle Star Handler")
+}
+
+const starClickHandler = () =>{
+    console.log("Star Click Handler")
+}
+
+const Message = ({message, selectHandler}) => {
+    console.log(`Message: - message: ${message}`)
+    console.log(`Message: - selectHandler: ${selectHandler}`)
+
+    var checkboxOptions = {
+        name: "selectCheckbox",
+        value: message.id,
+        type: "checkbox",
+        onChange: (e) => {
+            selectMessageHandler(e, selectHandler)
+        }
+    }
+    // console.dir(message)
+
+    if (message.selected) {
+        checkboxOptions.checked = true
+        console.log(" .. We are setting Checked: ", checkboxOptions)
+    }
+
+    // console.log("checkbox options: ", checkboxOptions)
+
+    let rowFormat = "row message "
+    rowFormat += message.read ? "read " : "unread "
+    rowFormat += message.selected ? "selected " : ""
+    let checkedStatus = message.selected === true ? "checked" : ""
+
+    // console.log("MessageId: ", message.id, ', selected: ',message.selected,', checkedStatus: ',checkedStatus, ', starred: ',message.starred)
+
+    let msgstarred = message.starred ? "star fa fa-star" : "star fa fa-star-o"
     return (
         <div className={rowFormat}>
             <div className="col-xs-1">
@@ -14,12 +56,32 @@ const Message = ({message}) => {
                             name="selectCheckbox"
                             value={message.id}
                             type="checkbox"
-                            onchange={(e) => {console.log(`Clicked! - e.target.value: ${e.target.value}`)}}
-                            />
+                            onChange={(e) => selectMessageHandler(e, selectHandler)}
+                            checked={checkedStatus}/>
                     </div>
+                    <div className="col-xs-2">
+                        <i name="star"
+                           data-messagenum={message.id}
+                           data-msg="MyMsg"
+                           value={message.id}
+                           onClick={(e) => {
+                               starClickHandler(e, toggleStar)
+                           }}
+                           className={msgstarred}/>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div className="col-xs-11">
+                    {message.labels.map((lbl, id) => {
+                        return <span key={id} className="label label-warning">{lbl}</span>
+                    })}
+                    {message.subject}
                 </div>
             </div>
         </div>
     )
+
 }
 export default Message
