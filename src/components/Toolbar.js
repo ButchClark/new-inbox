@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {AllSelected,SomeSelected,NoneSelected} from "../App";
-import {INCREMENT_UNREAD_MESSAGES} from "../actions";
+import {INCREMENT_UNREAD_MESSAGES, toggleShowCompose} from "../actions";
 
 const Toolbar = ({
                      selectedStyle,
@@ -82,16 +82,18 @@ const Toolbar = ({
     )
 }
 
-const mapStateToProps = (state) => ({
-    selectedStyle: state.selectedStyle,
-    unreadMessages: state.unreadMessages
-})
+const mapStateToProps = (state) => {
+    console.log('>Toolbar.mapStateToProps - state:')
+    console.dir(state)
+
+    return {
+    selectedStyle: state.display.selectedStyle,
+    unreadMessages: state.display.unreadMessages
+}}
 
 const mapDispatchToProps = dispatch => ({
-    unreadMessagesHandler: (e) => {
-        dispatch(INCREMENT_UNREAD_MESSAGES)
-    }
-})
+        toggleShowCompose: toggleShowCompose
+}
 
 export default connect(
     mapStateToProps,

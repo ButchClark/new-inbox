@@ -3,15 +3,15 @@ import {applyMiddleware, combineReducers, createStore} from 'redux'
 import {composeWithDevTools} from 'redux-devtools-extension'
 import * as reducers from './reducers'
 import logger from 'redux-logger'
-import {AllSelected,SomeSelected,NoneSelected} from "./App";
+import {NoneSelected} from "./App";
 
 const initialState = {
-    messages: {
-        messages: [],
-        selectedStyle: NoneSelected
-    },
-    unreadMessages: 0
-
+    messages: [],
+    display: {
+        selectedStyle: NoneSelected,
+        unreadMessages: 0,
+        showCompose: false
+    }
 }
 
 const store = createStore(

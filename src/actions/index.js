@@ -1,7 +1,8 @@
-export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED'
+export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED';
 export const UNREAD_MESSAGES = 'UNREAD_MESSAGES'
 export const INCREMENT_UNREAD_MESSAGES = 'INCREMENT_UNREAD_MESSAGES'
 export const SELECTED_STYLE = "SELECTED_STYLE"
+export const SHOW_COMPOSE = "SHOW_COMPOSEaction.selectedStyle"
 
 export function getMessages() {
     console.log("> actions.getMessages()")
@@ -41,12 +42,21 @@ export function setSelectedStyle(style){
     }
 }
 
-// export function dispatchIncrementMessages(){
-//     console.log('> actions.incrementUnreadMessages')
-//
-//     return async(dispatch) =>{
-//         dispatch({
-//             type: INCREMENT_UNREAD_MESSAGES
-//         })
-//     }
-// }
+export function toggleShowCompose(){
+    console.log('> actions.toggleShowCompose')
+    return async(dispatch) =>{
+        dispatch({
+            type: SHOW_COMPOSE
+        })
+    }
+}
+
+export function incrementMessages(){
+    console.log('> actions.incrementUnreadMessages')
+
+    return async(dispatch) =>{
+        dispatch({
+            type: INCREMENT_UNREAD_MESSAGES
+        })
+    }
+}

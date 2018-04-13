@@ -7,11 +7,11 @@ import {getMessages} from './actions/index'
 import {Provider} from 'react-redux'
 import store from './store'
 import {AllSelected,SomeSelected,NoneSelected} from "./App";
-import {unreadMessageCount,setSelectedStyle} from "./actions";
+import {unreadMessageCount, setSelectedStyle, toggleShowCompose} from "./actions";
 
-store.dispatch(getMessages())
-store.dispatch(unreadMessageCount(9))
+store.dispatch(unreadMessageCount(1))
 store.dispatch(setSelectedStyle(NoneSelected))
+store.dispatch(getMessages())
 
 ReactDOM.render(
     <Provider store={store}>

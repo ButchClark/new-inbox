@@ -4,6 +4,7 @@ import MyHeader from './components/MyHeader'
 import Messages from './components/Messages'
 import Toolbar from './components/Toolbar'
 import {connect} from 'react-redux'
+import ComposeMessage from './components/ComposeMessage'
 
 export const AllSelected = 1
 export const SomeSelected = 2
@@ -12,8 +13,6 @@ export const NoneSelected = 3
 class App extends Component {
     constructor(props) {
         super(props)
-        this.messages = props.messages
-        this.unreadMessages = props.unreadMessages
         console.log('App.ctor(): props:')
         console.dir(props)
     }
@@ -22,20 +21,17 @@ class App extends Component {
         return (
             <div className="App">
                 <div>
-                    <MyHeader/>
+                    <Toolbar  />
                 </div>
                 <div>
-                    <Toolbar   />
-                </div>
-                <div>
-                    ComposeMessage here...
+                    {this.props.display.showCompose && <ComposeMessage sendMessage={()=>{console.log('add message')}}/>}
                 </div>
                 <div>
                     <h3>Messages</h3>
                     {
-                        this.messages===undefined
+                        this.props.messages===undefined
                             ? 'Loading...'
-                            : <Messages messages={this.messages}/>
+                            : <Messages messages={this.props.messages}/>
                     }
                 </div>
             </div>
@@ -43,10 +39,13 @@ class App extends Component {
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => {
+    console.log('>App.mapStateToProps - state: ')
+    console.dir(state)
+    return {
     messages: state.messages,
-    unreadMessages: state.unreadMessages
-})
+    display: state.display
+}}
 
 export default connect(
     mapStateToProps,
