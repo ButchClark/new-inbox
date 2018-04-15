@@ -12,6 +12,15 @@ export function getMessages() {
         const json = await resp.json()
         // This becomes the "action" object in the reducer
         await console.log(`Got back messages: ${json}`)
+        let unread = 0
+        json._embedded.messages.forEach((m)=>{
+            if(m.read === false){ unread += 1 }
+        })
+        await dispatch({
+            type: UNREAD_MESSAGES,
+            unreadMessages: unread
+        })
+
         dispatch({
                 type: MESSAGES_RECEIVED,
                 messages: json._embedded.messages
