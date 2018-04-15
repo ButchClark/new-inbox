@@ -1,8 +1,8 @@
 export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED';
 export const UNREAD_MESSAGES = 'UNREAD_MESSAGES'
-export const INCREMENT_UNREAD_MESSAGES = 'INCREMENT_UNREAD_MESSAGES'
 export const SELECTED_STYLE = "SELECTED_STYLE"
 export const SHOW_COMPOSE = "SHOW_COMPOSE"
+export const SELECT_MESSAGE = "SELECT_MESSAGE"
 
 export function getMessages() {
     console.log("> actions.getMessages()")
@@ -48,6 +48,17 @@ export function toggleShowCompose(){
     return async (dispatch) => {
         dispatch({
             type: SHOW_COMPOSE
+        })
+    }
+}
+
+export function selectMessage(messageId){
+    console.log(`> actions.selectMessage( ${messageId} ) `)
+    return async(dispatch) =>{
+        console.log("calling dispatch now...")
+        dispatch({
+            type: SELECT_MESSAGE,
+            messageId: messageId
         })
     }
 }

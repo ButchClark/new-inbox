@@ -1,28 +1,26 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {AllSelected, SomeSelected, NoneSelected} from "../App";
-import {INCREMENT_UNREAD_MESSAGES, toggleShowCompose} from "../actions";
+import {AllSelected, NoneSelected, SomeSelected} from "../App";
+import {toggleShowCompose} from "../actions";
+import {bindActionCreators} from 'redux'
 
 const Toolbar = ({
                      selectedStyle,
                      unreadMessages,
-                     toggleShowCompose
+                     toggleShowCompose,
+                     unreadMessagesHandler
                  }) => {
 
-    // console.log(`> Toolbar - unreadMessages: ${unreadMessages}`)
-    // console.log(`> Toolbar - selectedStyle : ${selectedStyle}`)
-    console.log(`> Toolbar - toggleShowCompose:`)
-    console.dir(toggleShowCompose)
+    console.log(`> Toolbar - unreadMessages: ${unreadMessages}`)
+    console.log(`> Toolbar - selectedStyle : ${selectedStyle}`)
 
-    const doToggle = (e) =>{
-        console.log(" .. Toolbar.doToggle")
-        console.dir(toggleShowCompose)
-        toggleShowCompose()
-        console.log(" .. Toolbar.doToggle - after calling toggleShowCompose()")
-    }
     const handler = (e) => {
         console.log(`> Toolbar.handler - e: `)
         console.dir(e.target)
+        let x = unreadMessagesHandler()
+        console.log(`incrementUnreadMessages sent back: ${x}`)
+        x()
+        console.log('after x()')
     }
     let disableThem = false
 
@@ -54,7 +52,7 @@ const Toolbar = ({
                     <span className="badge badge">{unreadMessages}</span>
                     <i className="xxx">unread message{unreadMessages === 1 ? "" : "s"}</i>
                 </p>
-                <a className="btn btn-danger" onClick={doToggle} >
+                <a className="btn btn-danger" onClick={toggleShowCompose}>
                     <i className="fa fa-plus"></i>
                 </a>
                 <button className="btn btn-default" onClick={(e) => {
@@ -110,9 +108,9 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    toggleShowCompose: toggleShowCompose,
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+    toggleShowCompose: toggleShowCompose
+}, dispatch)
 
 export default connect(
     mapStateToProps,

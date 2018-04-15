@@ -9,8 +9,11 @@ import registerServiceWorker from './registerServiceWorker';
 import {getMessages} from './actions/index'
 import {Provider} from 'react-redux'
 import store from './store'
-import {AllSelected,SomeSelected,NoneSelected} from "./App";
-import {unreadMessageCount, setSelectedStyle, toggleShowCompose} from "./actions";
+import {NoneSelected} from "./App";
+import {unreadMessageCount, setSelectedStyle} from "./actions";
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-theme.css';
+import 'font-awesome/css/font-awesome.css';
 
 store.dispatch(unreadMessageCount(1))
 store.dispatch(setSelectedStyle(NoneSelected))

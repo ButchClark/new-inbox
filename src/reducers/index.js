@@ -1,10 +1,4 @@
-import {
-    INCREMENT_UNREAD_MESSAGES,
-    MESSAGES_RECEIVED,
-    UNREAD_MESSAGES,
-    SELECTED_STYLE,
-    SHOW_COMPOSE
-} from "../actions";
+import {MESSAGES_RECEIVED, SELECT_MESSAGE, SELECTED_STYLE, SHOW_COMPOSE, UNREAD_MESSAGES} from "../actions";
 import {NoneSelected} from "../App";
 
 const initialState = {
@@ -17,11 +11,27 @@ const initialState = {
 }
 
 export function messages(state = initialState, action) {
+    console.log(`reducer.MESSAGES_RECEIVED: action.type: ${action.type} - state, action`)
+    console.dir(state)
+    console.dir(action)
     switch (action.type) {
         case MESSAGES_RECEIVED:
-            console.log(`reducer.MESSAGES_RECEIVED: state:`)
-            console.dir(state)
             return action.messages
+        case SELECT_MESSAGE:
+            let newMessages = state.map(msg => {
+                console.log(`SELECT_MSG: action.messageId: ${action.messageId}, msg.id: ${msg.id}`)
+                if (Number(msg.id) === Number(action.messageId)) {
+                    if (!msg.selected || msg.selected === false) {
+                        msg.selected = true
+                    } else {
+                        msg.selected = false
+                    }
+                }
+                return msg
+            })
+            console.log(`reducer.MESSAGES_RECEIVED: newMessages:`)
+            console.dir(newMessages)
+            return newMessages
 
         default:
             return state
@@ -37,14 +47,6 @@ export function display(state = initialState, action) {
             return {
                 ...state,
                 unreadMessages: action.unreadMessages
-            }
-
-        case INCREMENT_UNREAD_MESSAGES:
-            console.log(`reducer.INCREMENT_UNREAD_MESSAGES: state:`)
-            console.dir(state)
-            return {
-                ...state.display,
-                unreadMessages: state.display.unreadMessages + 1
             }
 
         case SELECTED_STYLE:
