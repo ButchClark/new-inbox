@@ -1,5 +1,5 @@
 import {MESSAGES_RECEIVED, SELECT_MESSAGE, SELECTED_STYLE, SHOW_COMPOSE, UNREAD_MESSAGES} from "../actions";
-import {NoneSelected} from "../App";
+import {AllSelected, NoneSelected, SomeSelected} from "../App";
 
 const initialState = {
     messages: [],
@@ -19,7 +19,6 @@ export function messages(state = initialState, action) {
             return action.messages
         case SELECT_MESSAGE:
             let newMessages = state.map(msg => {
-                console.log(`SELECT_MSG: action.messageId: ${action.messageId}, msg.id: ${msg.id}`)
                 if (Number(msg.id) === Number(action.messageId)) {
                     if (!msg.selected || msg.selected === false) {
                         msg.selected = true
@@ -29,8 +28,28 @@ export function messages(state = initialState, action) {
                 }
                 return msg
             })
-            console.log(`reducer.MESSAGES_RECEIVED: newMessages:`)
-            console.dir(newMessages)
+
+            let selectedStyle = NoneSelected
+            let selectedCount = 0
+            if(newMessages) {
+                console.log(` .. there are ${newMessages.length} state.messages`)
+                newMessages.forEach((m) => {
+                    if (m.selected === true) {
+                        selectedCount += 1
+                    }
+                })
+                if (selectedCount === 0) {
+                    selectedStyle = NoneSelected
+                }
+                else if (selectedCount === newMessages.length) {
+                    selectedStyle = AllSelected
+                }
+                else {
+                    selectedStyle = SomeSelected
+                }
+                console.log(` .. there are ${selectedCount} selected messages`)
+            }
+
             return newMessages
 
         default:
@@ -39,27 +58,22 @@ export function messages(state = initialState, action) {
 }
 
 export function display(state = initialState, action) {
-    console.log(`-Reducer.display-action.type: ${action.type}`)
     switch (action.type) {
         case UNREAD_MESSAGES:
-            console.log(`reducer.UNREAD_MESSAGES: state:`)
-            console.dir(state)
             return {
                 ...state,
                 unreadMessages: action.unreadMessages
             }
 
         case SELECTED_STYLE:
-            console.log(`reducer.SELECTED_STYLE: state:`)
-            console.dir(state)
+            console.log("> SELECTED_STYLE")
+
             return {
                 ...state,
                 selectedStyle: action.selectedStyle
             }
 
         case SHOW_COMPOSE:
-            console.log(`reducer.SHOW_COMPOSE: state:`)
-            console.dir(state)
             return {
                 ...state,
                 showCompose: !state.showCompose

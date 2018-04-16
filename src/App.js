@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import MyHeader from './components/MyHeader'
 import Messages from './components/Messages'
 import Toolbar from './components/Toolbar'
 import {connect} from 'react-redux'
@@ -21,15 +20,17 @@ class App extends Component {
         return (
             <div className="App">
                 <div>
-                    <Toolbar  />
+                    <Toolbar/>
                 </div>
                 <div>
-                    {this.props.display.showCompose && <ComposeMessage sendMessage={()=>{console.log('add message')}}/>}
+                    {this.props.display.showCompose && <ComposeMessage sendMessage={() => {
+                        console.log('add message')
+                    }}/>}
                 </div>
                 <div>
                     <h3>Messages</h3>
                     {
-                        this.props.messages===undefined
+                        this.props.messages === undefined
                             ? 'Loading...'
                             : <Messages messages={this.props.messages}/>
                     }
@@ -40,12 +41,13 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log('>App.mapStateToProps - state: ')
-    console.dir(state)
+    // console.log('>App.mapStateToProps - state: ')
+    // console.dir(state)
     return {
-    messages: state.messages,
-    display: state.display
-}}
+        messages: state.messages,
+        display: state.display
+    }
+}
 
 export default connect(
     mapStateToProps,

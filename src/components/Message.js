@@ -23,8 +23,6 @@ const starClickHandler = (e, upstreamHandler) => {
 }
 
 const Message = ({message, selectMessage, starHandler}) => {
-    console.log("> Message - ")
-    console.dir(message)
     let rowFormat = "row message "
     rowFormat += message.read ? "read " : "unread "
     rowFormat += message.selected ? "selected " : ""
