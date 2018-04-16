@@ -5,6 +5,8 @@ export const UNREAD_MESSAGES = 'UNREAD_MESSAGES'
 export const SELECTED_STYLE = "SELECTED_STYLE"
 export const SHOW_COMPOSE = "SHOW_COMPOSE"
 export const SELECT_MESSAGE = "SELECT_MESSAGE"
+export const SELECT_ALL_MESSAGES = "SELECT_ALL_MESSAGES"
+export const DESELECT_ALL_MESSAGES = "DESELECT_ALL_MESSAGES"
 
 export function getMessages() {
     console.log("> actions.getMessages()")
@@ -79,13 +81,25 @@ export function selectMessage(messageId){
             type: SELECT_MESSAGE,
             messageId: messageId
         })
-
+    }
+}
+export function selectAllMessages(){
+    console.log("actions.selectAllMessages()")
+    return async (dispatch) => {
         dispatch({
-            type: SELECTED_STYLE
+            type: SELECT_ALL_MESSAGES
         })
     }
 }
 
+export function deselectAllMessages(){
+    console.log("actions.deselectAllMessages()")
+    return async(dispatch) =>{
+        dispatch({
+            type: DESELECT_ALL_MESSAGES
+        })
+    }
+}
 
 export function deleteMessages(){
         console.log("> actions.deleteMessages()")

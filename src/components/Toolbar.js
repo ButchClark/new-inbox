@@ -1,41 +1,42 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
-import {deleteMessages, toggleShowCompose} from "../actions";
+import {deleteMessages, toggleShowCompose, deselectAllMessages, selectAllMessages} from "../actions";
 import {bindActionCreators} from 'redux'
 
 class Toolbar extends Component {
     constructor(props) {
         super(props)
         this.messages = props.messages
-        this.selectedStyle = NoneSelected
+        this.selectedStyle = props.selectedStyle
         this.unreadMessages = props.unreadMessages
         this.toggleShowCompose = props.toggleShowCompose
         console.log(`> Toolbar.ctor - unreadMessages: ${this.unreadMessages}`)
         console.log(`> Toolbar.ctor - selectedStyle : ${this.selectedStyle}`)
     }
 
-    render() {
-        const getSelectedStyle = () =>{
-            let selectedCount = 0
-            let selectedStyle = NoneSelected
-            this.messages.forEach((m)=>{
-                if(m.selected === true){
-                    selectedCount += 1
-                }
-            })
-            if(selectedCount===0){ selectedStyle = NoneSelected}
-            else if(selectedCount === this.messages.length){ selectedStyle=AllSelected}
-            else {selectedStyle = SomeSelected}
-            return selectedStyle
-        }
+    componentWillReceiveProps = (nextProps) =>{
+        this.messages = nextProps.messages
+        this.selectedStyle = nextProps.selectedStyle
+        this.unreadMessages = nextProps.unreadMessages
+        this.toggleShowCompose = nextProps.toggleShowCompose
+    }
 
+    handleSelectButton = () =>{
+        console.log(`TOOLBAR.handleSelectButton() - selectedStyle: ${this.selectedStyle}`)
+        if(this.selectedStyle === AllSelected){
+            deselectAllMessages()
+        }else{
+            selectAllMessages()
+        }
+    }
+
+    render() {
+	console.log(`TOOLBAR.render(): this.selectedStyle: ${this.selectedStyle}`)
         const handler = (e) => {
             console.log(`> Toolbar.handler - e: `)
             console.dir(e.target)
         }
-        // see how many messages are selected
-        this.selectedStyle = getSelectedStyle()
 
         let disableThem = false
         if (this.selectedStyle === NoneSelected ) disableThem = true
@@ -67,9 +68,7 @@ class Toolbar extends Component {
                     <a className="btn btn-danger" onClick={toggleShowCompose}>
                         <i className="fa fa-plus"></i>
                     </a>
-                    <button className="btn btn-default" onClick={(e) => {
-                        handler(e)
-                    }}>
+                    <button className="btn btn-default" onClick={this.handleSelectButton}>
                         <i className={selectedFormat}></i>
                     </button>
 
@@ -115,15 +114,40 @@ const mapStateToProps = (state) => {
     console.log('>Toolbar.mapStateToProps - state:')
     console.dir(state)
 
+
+    let selectedStyle = NoneSelected
+    let selectedCount = 0
+    if(state.messages) {
+        console.log(` .. there are ${state.messages.length} state.messages`)
+        state.messages.forEach((m) => {
+            if (m.selected === true) {
+                selectedCount += 1
+            }
+        })
+        if (selectedCount === 0) {
+            selectedStyle = NoneSelected
+        }
+        else if (selectedCount === state.messages.length) {
+            selectedStyle = AllSelected
+        }
+        else {
+            selectedStyle = SomeSelected
+        }
+        console.log(` .. there are ${selectedCount} selected messages, and selectedStyle is: ${selectedStyle}`)
+    }
+
     return {
         unreadMessages: state.display.unreadMessages,
-        messages: state.messages
+        messages: state.messages,
+        selectedStyle: selectedStyle
     }
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     toggleShowCompose: toggleShowCompose,
-    deleteMessages: deleteMessages
+    deleteMessages: deleteMessages,
+    selectAllMessages: selectAllMessages,
+    deselectAllMessages: deselectAllMessages
 }, dispatch)
 
 export default connect(

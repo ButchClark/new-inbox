@@ -1,4 +1,12 @@
-import {MESSAGES_RECEIVED, SELECT_MESSAGE, SELECTED_STYLE, SHOW_COMPOSE, UNREAD_MESSAGES} from "../actions";
+import {
+    MESSAGES_RECEIVED,
+    SELECT_ALL_MESSAGES,
+    SELECT_MESSAGE,
+    SELECTED_STYLE,
+    SHOW_COMPOSE,
+    UNREAD_MESSAGES,
+    DESELECT_ALL_MESSAGES
+} from "../actions";
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
 
 const initialState = {
@@ -28,29 +36,24 @@ export function messages(state = initialState, action) {
                 }
                 return msg
             })
-
-            let selectedStyle = NoneSelected
-            let selectedCount = 0
-            if(newMessages) {
-                console.log(` .. there are ${newMessages.length} state.messages`)
-                newMessages.forEach((m) => {
-                    if (m.selected === true) {
-                        selectedCount += 1
-                    }
-                })
-                if (selectedCount === 0) {
-                    selectedStyle = NoneSelected
-                }
-                else if (selectedCount === newMessages.length) {
-                    selectedStyle = AllSelected
-                }
-                else {
-                    selectedStyle = SomeSelected
-                }
-                console.log(` .. there are ${selectedCount} selected messages`)
-            }
-
             return newMessages
+
+        case SELECT_ALL_MESSAGES:
+            console.log(`reducers.SELECT_ALL_MESSAGES - state:`)
+            console.dir(state)
+            let newSelectAll = state.map(msg => {
+                msg.selected=true
+                return msg
+            })
+            return newSelectAll
+
+        case DESELECT_ALL_MESSAGES:
+            let newDeselectAll = state.map(msg => {
+                msg.selected=false
+                return msg
+            })
+            return newDeselectAll
+
 
         default:
             return state
