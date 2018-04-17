@@ -1,7 +1,15 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
-import {deleteMessages, toggleShowCompose, deselectAllMessages, selectAllMessages} from "../actions";
+import {
+    deleteMessages,
+    toggleShowCompose,
+    deselectAllMessages,
+    selectAllMessages,
+    markMessagesUnread,
+    markMessagesRead, getMessages
+} from "../actions";
+
 import {bindActionCreators} from 'redux'
 
 class Toolbar extends Component {
@@ -14,6 +22,9 @@ class Toolbar extends Component {
         this.toggleShowCompose = props.toggleShowCompose
         this.selectAllMessages = props.selectAllMessages
         this.deselectAllMessages = props.deselectAllMessages
+        this.markMessagesRead = props.markMessagesRead
+        this.markMessagesUnread = props.markMessagesUnread
+        this.getMessages = props.getMessages
         console.log(`> Toolbar.ctor - props:`)
         console.dir(props)
     }
@@ -32,6 +43,20 @@ class Toolbar extends Component {
         }else{
             this.selectAllMessages()
         }
+    }
+
+    handleMarkRead = async () =>{
+        await this.markMessagesRead()
+        await console.log('handleMarkRead: after markMessagesRead()')
+        await this.getMessages()
+        await console.log('handleMarkRead: after getMessages()')
+    }
+
+    handleMarkUnread = async () =>{
+        await this.markMessagesUnread()
+        await console.log('handleMarkRead: after markMessagesUnread()')
+        await this.getMessages()
+        await console.log('handleMarkRead: after getMessages()')
     }
 
     render() {
@@ -74,14 +99,8 @@ class Toolbar extends Component {
                         <i className={selectedFormat}></i>
                     </button>
 
-                    <button {...markAsProps} onClick={(e) => {
-                        handler(e)
-                    }}>Mark As Read
-                    </button>
-                    <button {...markAsProps} onClick={(e) => {
-                        handler(e)
-                    }}>Mark As Unread
-                    </button>
+                    <button {...markAsProps} onClick={this.handleMarkRead}>Mark As Read </button>
+                    <button {...markAsProps} onClick={this.handleMarkUnread}>Mark As Unread </button>
 
                     <select {...selectProps} onChange={(e) => {
                         handler(e)
@@ -147,7 +166,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     toggleShowCompose: toggleShowCompose,
     deleteMessages: deleteMessages,
     selectAllMessages: selectAllMessages,
-    deselectAllMessages: deselectAllMessages
+    deselectAllMessages: deselectAllMessages,
+    markMessagesRead: markMessagesRead,
+    markMessagesUnread: markMessagesUnread,
+    getMessages: getMessages
 }, dispatch)
 
 export default connect(

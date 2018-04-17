@@ -7,6 +7,8 @@ export const SHOW_COMPOSE = "SHOW_COMPOSE"
 export const SELECT_MESSAGE = "SELECT_MESSAGE"
 export const SELECT_ALL_MESSAGES = "SELECT_ALL_MESSAGES"
 export const DESELECT_ALL_MESSAGES = "DESELECT_ALL_MESSAGES"
+export const MARK_READ = "MARK_READ"
+export const MARK_UNREAD = "MARK_UNREAD"
 
 export function getMessages() {
     console.log("> actions.getMessages()")
@@ -41,6 +43,22 @@ export function getMessages() {
                 messages: json._embedded.messages
             }
         )
+    }
+}
+
+export function markMessagesRead(){
+    return async(dispatch)=>{
+        await dispatch({
+            type: MARK_READ
+        })
+    }
+}
+
+export function markMessagesUnread(){
+    return async(dispatch)=>{
+        dispatch({
+            type: MARK_UNREAD
+        })
     }
 }
 
