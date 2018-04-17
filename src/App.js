@@ -14,6 +14,11 @@ class App extends Component {
         super(props)
         console.log('App.ctor(): props:')
         console.dir(props)
+        this.showCompose = props.display.showCompose
+    }
+
+    componentWillReceiveProps = (nextProps) =>{
+        this.showCompose = nextProps.display.showCompose
     }
 
     render() {
@@ -23,7 +28,7 @@ class App extends Component {
                     <Toolbar/>
                 </div>
                 <div>
-                    {this.props.display.showCompose && <ComposeMessage sendMessage={() => {
+                    {this.showCompose && <ComposeMessage sendMessage={() => {
                         console.log('add message')
                     }}/>}
                 </div>

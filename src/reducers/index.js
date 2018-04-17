@@ -19,9 +19,9 @@ const initialState = {
 }
 
 export function messages(state = initialState, action) {
-    console.log(`reducer.MESSAGES_RECEIVED: action.type: ${action.type} - state, action`)
-    console.dir(state)
-    console.dir(action)
+    // console.log(`reducer.MESSAGES: action.type: ${action.type} - state, action`)
+    // console.dir(state)
+    // console.dir(action)
     switch (action.type) {
         case MESSAGES_RECEIVED:
             return action.messages
@@ -39,8 +39,6 @@ export function messages(state = initialState, action) {
             return newMessages
 
         case SELECT_ALL_MESSAGES:
-            console.log(`reducers.SELECT_ALL_MESSAGES - state:`)
-            console.dir(state)
             let newSelectAll = state.map(msg => {
                 msg.selected=true
                 return msg
@@ -61,6 +59,7 @@ export function messages(state = initialState, action) {
 }
 
 export function display(state = initialState, action) {
+    // console.log(`reducer.DISPLAY: action.type: ${action.type} - state, action`)
     switch (action.type) {
         case UNREAD_MESSAGES:
             return {
@@ -69,8 +68,6 @@ export function display(state = initialState, action) {
             }
 
         case SELECTED_STYLE:
-            console.log("> SELECTED_STYLE")
-
             return {
                 ...state,
                 selectedStyle: action.selectedStyle

@@ -83,10 +83,11 @@ export function selectMessage(messageId){
         })
     }
 }
+
 export function selectAllMessages(){
-    console.log("actions.selectAllMessages()")
-    return async (dispatch) => {
-        dispatch({
+    return async(dispatch) =>{
+
+        await dispatch({
             type: SELECT_ALL_MESSAGES
         })
     }

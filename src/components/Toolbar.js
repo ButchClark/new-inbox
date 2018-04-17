@@ -9,30 +9,32 @@ class Toolbar extends Component {
         super(props)
         this.messages = props.messages
         this.selectedStyle = props.selectedStyle
+        this.showCompose = props.showCompose
         this.unreadMessages = props.unreadMessages
         this.toggleShowCompose = props.toggleShowCompose
-        console.log(`> Toolbar.ctor - unreadMessages: ${this.unreadMessages}`)
-        console.log(`> Toolbar.ctor - selectedStyle : ${this.selectedStyle}`)
+        this.selectAllMessages = props.selectAllMessages
+        this.deselectAllMessages = props.deselectAllMessages
+        console.log(`> Toolbar.ctor - props:`)
+        console.dir(props)
     }
 
     componentWillReceiveProps = (nextProps) =>{
         this.messages = nextProps.messages
         this.selectedStyle = nextProps.selectedStyle
+        this.showCompose = nextProps.showCompose
         this.unreadMessages = nextProps.unreadMessages
-        this.toggleShowCompose = nextProps.toggleShowCompose
     }
 
     handleSelectButton = () =>{
         console.log(`TOOLBAR.handleSelectButton() - selectedStyle: ${this.selectedStyle}`)
         if(this.selectedStyle === AllSelected){
-            deselectAllMessages()
+            this.deselectAllMessages()
         }else{
-            selectAllMessages()
+            this.selectAllMessages()
         }
     }
 
     render() {
-	console.log(`TOOLBAR.render(): this.selectedStyle: ${this.selectedStyle}`)
         const handler = (e) => {
             console.log(`> Toolbar.handler - e: `)
             console.dir(e.target)
@@ -65,7 +67,7 @@ class Toolbar extends Component {
                         <span className="badge badge">{this.unreadMessages}</span>
                         <i className="xxx">unread message{this.unreadMessages === 1 ? "" : "s"}</i>
                     </p>
-                    <a className="btn btn-danger" onClick={toggleShowCompose}>
+                    <a className="btn btn-danger" onClick={this.toggleShowCompose}>
                         <i className="fa fa-plus"></i>
                     </a>
                     <button className="btn btn-default" onClick={this.handleSelectButton}>
@@ -118,7 +120,6 @@ const mapStateToProps = (state) => {
     let selectedStyle = NoneSelected
     let selectedCount = 0
     if(state.messages) {
-        console.log(` .. there are ${state.messages.length} state.messages`)
         state.messages.forEach((m) => {
             if (m.selected === true) {
                 selectedCount += 1
@@ -133,7 +134,6 @@ const mapStateToProps = (state) => {
         else {
             selectedStyle = SomeSelected
         }
-        console.log(` .. there are ${selectedCount} selected messages, and selectedStyle is: ${selectedStyle}`)
     }
 
     return {
