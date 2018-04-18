@@ -7,7 +7,8 @@ import {
     deselectAllMessages,
     selectAllMessages,
     markMessagesUnread,
-    markMessagesRead, getMessages
+    markMessagesRead,
+    getMessages
 } from "../actions";
 
 import {bindActionCreators} from 'redux'
@@ -54,9 +55,9 @@ class Toolbar extends Component {
 
     handleMarkUnread = async () =>{
         await this.markMessagesUnread()
-        await console.log('handleMarkRead: after markMessagesUnread()')
+        await console.log('handleMarkUnread: after markMessagesUnread()')
         await this.getMessages()
-        await console.log('handleMarkRead: after getMessages()')
+        await console.log('handleMarkUnread: after getMessages()')
     }
 
     render() {

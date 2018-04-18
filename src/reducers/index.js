@@ -8,7 +8,8 @@ import {
     SELECTED_STYLE,
     SHOW_COMPOSE,
     UNREAD_MESSAGES,
-    setRead
+    setRead,
+    setUnread
 } from "../actions";
 import {NoneSelected} from "../App";
 
@@ -74,12 +75,21 @@ export function messages(state = initialState, action) {
             console.log("reducers.MARK_READ")
             console.dir(state)
             console.dir(messages)
-            // loop thru messages.  For each selected, if the msg is not read, send to API server
-            // return new messages
             try {
                 setRead(state)
             } catch (err) {
                 console.log(`!!! setRead errored:  ${err}`)
+            }
+            return state
+
+        case MARK_UNREAD:
+            console.log("reducers.MARK_UNREAD")
+            console.dir(state)
+            console.dir(messages)
+            try {
+                setUnread(state)
+            } catch (err) {
+                console.log(`!!! setUnread errored:  ${err}`)
             }
             return state
 
@@ -90,6 +100,7 @@ export function messages(state = initialState, action) {
         default:
             return state
     }
+
 }
 
 
