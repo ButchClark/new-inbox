@@ -72,12 +72,16 @@ export function messages(state = initialState, action) {
 
         case MARK_READ:
             console.log("reducers.MARK_READ")
+            console.dir(state)
+            console.dir(messages)
             // loop thru messages.  For each selected, if the msg is not read, send to API server
             // return new messages
-            let readMsgs = setRead(state.messages)
-            console.log(` .. readMsgs:`)
-            console.dir(readMsgs)
-            return readMsgs
+            try {
+                setRead(state)
+            } catch (err) {
+                console.log(`!!! setRead errored:  ${err}`)
+            }
+            return state
 
         case MARK_UNREAD:
             console.log("reducers.MARK_UNREAD")

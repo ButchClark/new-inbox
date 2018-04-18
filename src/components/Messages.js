@@ -7,16 +7,22 @@ const Messages = ({messages}) => {
     if (messages === undefined) {
         response = "Loading..."
     } else {
-        response =
-            messages.map(msg => {
-                return <Message
-                    key={msg.id}
-                    message={msg}
-                    starHandler={() => {
-                        console.log('starHandler()')
-                    }}
-                />
-            })
+        if( Array.isArray(messages)) {
+            response =
+                messages.map(msg => {
+                    return <Message
+                        key={msg.id}
+                        message={msg}
+                        starHandler={() => {
+                            console.log('starHandler()')
+                        }}
+                    />
+                })
+        }else{
+            response = "dumping to sysout"
+            console.log('`*** messages passed in is NOT an array...')
+            console.dir(messages)
+        }
     }
     return (
         <div>
