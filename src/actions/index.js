@@ -63,6 +63,7 @@ export function markMessagesRead() {
         getMessages()
     }
 }
+
 export function markMessagesUnread() {
     return async (dispatch) => {
         await dispatch({
@@ -132,8 +133,44 @@ export function deselectAllMessages() {
 
 export function deleteMessages() {
     console.log("> actions.deleteMessages()")
-}
+    if (!messages || messages.length === 0) {
+        return []
+    }
 
+    let messageIds = []
+    messages.forEach((m) => {
+        if (m.selected === true) {
+            messageIds.push(m.id)
+        }
+    })
+    console.log(`messageIds: ${messageIds}`)
+    const callPatch = async (messageIds) => {
+
+        let theBody = JSON.stringify(
+            {
+                messageIds,
+                command: "delete"
+            }
+        )
+
+        console.log("PATCH Body to be sent:")
+        console.log(theBody)
+
+        try {
+            const response = await fetch(`/api/messages`, {
+                method: 'PATCH',
+                body: theBody,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            })
+            await console.log(`response from PATCH call: ${response}`)
+        } catch (err) {
+            console.log(`!! Error from PATCH call: ${err}`)
+        }
+    }
+}
 
 export function setRead(messages) {
     if (!messages || messages.length === 0) {
@@ -177,7 +214,6 @@ export function setRead(messages) {
     callPatch(messageIds)
     console.log('after callPatch()')
 }
-
 
 export function setUnread(messages) {
     if (!messages || messages.length === 0) {
