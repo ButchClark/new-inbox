@@ -1,15 +1,16 @@
 import {
+    DESELECT_ALL_MESSAGES,
+    MARK_READ,
+    MARK_UNREAD,
     MESSAGES_RECEIVED,
     SELECT_ALL_MESSAGES,
     SELECT_MESSAGE,
     SELECTED_STYLE,
     SHOW_COMPOSE,
     UNREAD_MESSAGES,
-    DESELECT_ALL_MESSAGES,
-    MARK_READ,
-    MARK_UNREAD
+    setRead
 } from "../actions";
-import {AllSelected, NoneSelected, SomeSelected} from "../App";
+import {NoneSelected} from "../App";
 
 const initialState = {
     messages: [],
@@ -73,8 +74,10 @@ export function messages(state = initialState, action) {
             console.log("reducers.MARK_READ")
             // loop thru messages.  For each selected, if the msg is not read, send to API server
             // return new messages
-            setRead(state.messages)
-            return state
+            let readMsgs = setRead(state.messages)
+            console.log(` .. readMsgs:`)
+            console.dir(readMsgs)
+            return readMsgs
 
         case MARK_UNREAD:
             console.log("reducers.MARK_UNREAD")
@@ -85,30 +88,6 @@ export function messages(state = initialState, action) {
     }
 }
 
-setRead = (messages) => {
-    messages.forEach(async (m) => {
-        let messageIds = []
-        messages.forEach((m) => {
-            if (m.read === true) {
-                messageIds.push(m.id)
-            }
-        })
-        const response = await fetch(`/api/messages`, {
-            method: 'PATCH',
-            body: JSON.stringify(
-                {
-                    messageIds: [{messageId}],
-                    command: "read",
-                    read: true
-                }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-        await console.log(`response from PATCH call: ${response}`)
-    })
-}
 
 export function display(state = initialState, action) {
     // console.log(`reducer.DISPLAY: action.type: ${action.type} - state, action`)

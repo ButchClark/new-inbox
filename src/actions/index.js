@@ -51,6 +51,7 @@ export function markMessagesRead(){
         await dispatch({
             type: MARK_READ
         })
+        getMessages()
     }
 }
 
@@ -124,5 +125,33 @@ export function deleteMessages(){
         console.log("> actions.deleteMessages()")
 }
 
+
+export function setRead(messages) {
+    if(!messages || messages.length===0){ return }
+
+    let messageIds = []
+    messages.forEach((m) => {
+        if (m.read === true) {
+            messageIds.push(m.id)
+        }
+    })
+    console.log(`messageIds: ${messageIds}`)
+    messages.forEach(async (m) => {
+        const response = await fetch(`/api/messages`, {
+            method: 'PATCH',
+            body: JSON.stringify(
+                {
+                    messageIds: [{messageIds}],
+                    command: "read",
+                    read: true
+                }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+        await console.log(`response from PATCH call: ${response}`)
+    })
+}
 
 
