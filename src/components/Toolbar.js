@@ -7,8 +7,7 @@ import {
     deselectAllMessages,
     selectAllMessages,
     markMessagesUnread,
-    markMessagesRead,
-    getMessages
+    markMessagesRead
 } from "../actions";
 
 import {bindActionCreators} from 'redux'
@@ -16,7 +15,6 @@ import {bindActionCreators} from 'redux'
 class Toolbar extends Component {
     constructor(props) {
         super(props)
-        this.messages = props.messages
         this.selectedStyle = props.selectedStyle
         this.showCompose = props.showCompose
         this.unreadMessages = props.unreadMessages
@@ -25,13 +23,12 @@ class Toolbar extends Component {
         this.deselectAllMessages = props.deselectAllMessages
         this.markMessagesRead = props.markMessagesRead
         this.markMessagesUnread = props.markMessagesUnread
-        this.getMessages = props.getMessages
+        this.deleteMessages = props.deleteMessages
         console.log(`> Toolbar.ctor - props:`)
         console.dir(props)
     }
 
     componentWillReceiveProps = (nextProps) =>{
-        this.messages = nextProps.messages
         this.selectedStyle = nextProps.selectedStyle
         this.showCompose = nextProps.showCompose
         this.unreadMessages = nextProps.unreadMessages
@@ -49,16 +46,18 @@ class Toolbar extends Component {
     handleMarkRead = async () =>{
         await this.markMessagesRead()
         await console.log('handleMarkRead: after markMessagesRead()')
-        await this.getMessages()
-        await console.log('handleMarkRead: after getMessages()')
     }
 
     handleMarkUnread = async () =>{
         await this.markMessagesUnread()
         await console.log('handleMarkUnread: after markMessagesUnread()')
-        await this.getMessages()
-        await console.log('handleMarkUnread: after getMessages()')
     }
+
+    handleDeleteMessages = async() =>{
+        await this.deleteMessages()
+        await console.log('handleDeleteMessages: after deleteMessages()')
+    }
+
 
     render() {
         const handler = (e) => {
@@ -121,9 +120,7 @@ class Toolbar extends Component {
                         <option value="gschool">gschool</option>
                     </select>
 
-                    <button {...markAsProps} onClick={(e) => {
-                        handler(e)
-                    }}>
+                    <button {...markAsProps} onClick={this.handleDeleteMessages}>
                         <i className="fa fa-trash-o"></i>
                     </button>
                 </div>
@@ -135,31 +132,10 @@ class Toolbar extends Component {
 const mapStateToProps = (state) => {
     console.log('>Toolbar.mapStateToProps - state:')
     console.dir(state)
-
-
-    let selectedStyle = NoneSelected
-    let selectedCount = 0
-    if(state.messages) {
-        state.messages.forEach((m) => {
-            if (m.selected === true) {
-                selectedCount += 1
-            }
-        })
-        if (selectedCount === 0) {
-            selectedStyle = NoneSelected
-        }
-        else if (selectedCount === state.messages.length) {
-            selectedStyle = AllSelected
-        }
-        else {
-            selectedStyle = SomeSelected
-        }
-    }
-
     return {
         unreadMessages: state.display.unreadMessages,
         messages: state.messages,
-        selectedStyle: selectedStyle
+        selectedStyle: state.selectedStyle
     }
 }
 
@@ -170,7 +146,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     deselectAllMessages: deselectAllMessages,
     markMessagesRead: markMessagesRead,
     markMessagesUnread: markMessagesUnread,
-    getMessages: getMessages
 }, dispatch)
 
 export default connect(

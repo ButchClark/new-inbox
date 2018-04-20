@@ -1,6 +1,7 @@
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
 
-export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED';
+export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED'
+export const MESSAGES_UPDATED = 'MESSAGES_UPDATED'
 export const UNREAD_MESSAGES = 'UNREAD_MESSAGES'
 export const SELECTED_STYLE = "SELECTED_STYLE"
 export const SHOW_COMPOSE = "SHOW_COMPOSE"
@@ -9,6 +10,46 @@ export const SELECT_ALL_MESSAGES = "SELECT_ALL_MESSAGES"
 export const DESELECT_ALL_MESSAGES = "DESELECT_ALL_MESSAGES"
 export const MARK_READ = "MARK_READ"
 export const MARK_UNREAD = "MARK_UNREAD"
+export const DELETE_MESSAGES = "DELETE_MESSAGES"
+
+export function updateMessages(msgs){
+    console.log("> actions.updateMessages(msgs)")
+    return async (dispatch) => {
+        let unread = 0
+        let numSelected = 0
+        msgs.forEach((m) => {
+            if (m.read === false) {
+                unread += 1
+            }
+            if (m.selected === true) {
+                numSelected += 1
+            }
+        })
+        await dispatch({
+            type: UNREAD_MESSAGES,
+            unreadMessages: unread
+        })
+        let selectionType = NoneSelected
+        if (numSelected === 0) {
+            selectionType = NoneSelected
+        }
+        else if (numSelected === msgs.length) {
+            selectionType = AllSelected
+        }
+        else selectionType = SomeSelected
+        await console.log(`updateMessages - calling SELECTED_TYPE with: ${selectionType}`)
+        await dispatch({
+            type: SELECTED_STYLE,
+            selectedStyle: selectionType
+        })
+
+        dispatch({
+                type: MESSAGES_UPDATED,
+                messages: msgs
+            }
+        )
+    }
+}
 
 export function getMessages() {
     console.log("> actions.getMessages()")
@@ -73,6 +114,15 @@ export function markMessagesUnread() {
     }
 }
 
+export function deleteMessages(){
+    return async (dispatch) => {
+        await dispatch({
+            type: DELETE_MESSAGES
+        })
+        getMessages()
+    }
+}
+
 export function unreadMessageCount(howMany) {
     console.log(`> actions.setUnreadMessages for numOfMsgs: ${howMany}`)
 
@@ -104,12 +154,15 @@ export function toggleShowCompose() {
 }
 
 export function selectMessage(messageId) {
-    return async (dispatch) => {
-
+    return async (dispatch, getState) => {
+        let msgs = getState().messages
+        console.log(`actions.selectMessage() - messages`)
+        console.dir(msgs)
         await dispatch({
             type: SELECT_MESSAGE,
             messageId: messageId
         })
+        updateMessages(msgs)
     }
 }
 
@@ -131,8 +184,7 @@ export function deselectAllMessages() {
     }
 }
 
-export function deleteMessages() {
-    console.log("> actions.deleteMessages()")
+export function executeDeleteMessages(messages) {
     if (!messages || messages.length === 0) {
         return []
     }
@@ -153,7 +205,7 @@ export function deleteMessages() {
             }
         )
 
-        console.log("PATCH Body to be sent:")
+        console.log("PATCH (for delete) Body to be sent:")
         console.log(theBody)
 
         try {
@@ -170,6 +222,8 @@ export function deleteMessages() {
             console.log(`!! Error from PATCH call: ${err}`)
         }
     }
+    callPatch(messageIds)
+    console.log('after callPatch()')
 }
 
 export function setRead(messages) {

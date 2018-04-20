@@ -8,8 +8,10 @@ import {
     SELECTED_STYLE,
     SHOW_COMPOSE,
     UNREAD_MESSAGES,
+    DELETE_MESSAGES,
     setRead,
-    setUnread
+    setUnread,
+    executeDeleteMessages, MESSAGES_UPDATED
 } from "../actions";
 import {NoneSelected} from "../App";
 
@@ -43,6 +45,10 @@ export function messages(state = initialState, action) {
                     })
                     : action.messages
             return newMsgs
+
+        case MESSAGES_UPDATED:
+            console.log(`MESSAGES_UPDATED`)
+            return action.messages
 
         case SELECT_MESSAGE:
             let newMessages = state.map(msg => {
@@ -82,6 +88,18 @@ export function messages(state = initialState, action) {
             }
             return state
 
+        case DELETE_MESSAGES:
+            console.log("reducers.DELETE_MESSAGES")
+            console.dir(state)
+            console.dir(messages)
+            try {
+                executeDeleteMessages(state)
+            } catch (err) {
+                console.log(`!!! deleteMessages errored:  ${err}`)
+            }
+            return state
+
+
         case MARK_UNREAD:
             console.log("reducers.MARK_UNREAD")
             console.dir(state)
@@ -91,10 +109,6 @@ export function messages(state = initialState, action) {
             } catch (err) {
                 console.log(`!!! setUnread errored:  ${err}`)
             }
-            return state
-
-        case MARK_UNREAD:
-            console.log("reducers.MARK_UNREAD")
             return state
 
         default:
