@@ -1,26 +1,26 @@
 import {
-    DESELECT_ALL_MESSAGES,
-    MARK_READ,
-    MARK_UNREAD,
+    DELETING_MESSAGES,
+    HIDE_COMPOSE,
+    MESSAGE_SELECTED,
+    MESSAGES_DELETED,
     MESSAGES_RECEIVED,
-    SELECT_ALL_MESSAGES,
-    SELECT_MESSAGE,
-    SELECTED_STYLE,
-    SHOW_COMPOSE,
-    UNREAD_MESSAGES,
-    DELETE_MESSAGES,
-    setRead,
-    setUnread,
-    executeDeleteMessages, MESSAGES_UPDATED
+    MESSAGES_SELECTED,
+    MESSAGES_UPDATED,
+    SELECTING_MESSAGE,
+    SELECTING_MESSAGES,
+    SHOW_COMPOSE
 } from "../actions";
-import {NoneSelected} from "../App";
 
 const initialState = {
-    messages: [],
-    display: {
-        selectedStyle: NoneSelected,
-        unreadMessages: 0,
-        showCompose: false
+    messages: {
+        messages: [],
+        showCompose: false,
+        starringMessage: false,
+        addingMessage: false,
+        applyingLabels: false,
+        removingLabels: false,
+        selectingMessage: false,
+        selectingMessages: false
     }
 }
 
@@ -35,108 +35,91 @@ export function messages(state = initialState, action) {
             console.dir(action)
             // Need to set Selected before returning
             let newMsgs =
-                (state.messages)
+                (state.messages.messages)
                     ? action.messages.forEach((m) => {
-                        state.messages.forEach((s) => {
+                        state.messages.messages.forEach((s) => {
                             if (s.id === m.id) {
                                 m.selected = s.selected
                             }
                         })
                     })
                     : action.messages
-            return newMsgs
+            return {
+                ...state,
+                messages: newMsgs
+            }
 
         case MESSAGES_UPDATED:
             console.log(`MESSAGES_UPDATED`)
-            return action.messages
-
-        case SELECT_MESSAGE:
-            let newMessages = state.map(msg => {
-                if (Number(msg.id) === Number(action.messageId)) {
-                    if (!msg.selected || msg.selected === false) {
-                        msg.selected = true
-                    } else {
-                        msg.selected = false
-                    }
-                }
-                return msg
-            })
-            return newMessages
-
-        case SELECT_ALL_MESSAGES:
-            let newSelectAll = state.map(msg => {
-                msg.selected = true
-                return msg
-            })
-            return newSelectAll
-
-        case DESELECT_ALL_MESSAGES:
-            let newDeselectAll = state.map(msg => {
-                msg.selected = false
-                return msg
-            })
-            return newDeselectAll
-
-        case MARK_READ:
-            console.log("reducers.MARK_READ")
-            console.dir(state)
-            console.dir(messages)
-            try {
-                setRead(state)
-            } catch (err) {
-                console.log(`!!! setRead errored:  ${err}`)
-            }
-            return state
-
-        case DELETE_MESSAGES:
-            console.log("reducers.DELETE_MESSAGES")
-            console.dir(state)
-            console.dir(messages)
-            try {
-                executeDeleteMessages(state)
-            } catch (err) {
-                console.log(`!!! deleteMessages errored:  ${err}`)
-            }
-            return state
-
-
-        case MARK_UNREAD:
-            console.log("reducers.MARK_UNREAD")
-            console.dir(state)
-            console.dir(messages)
-            try {
-                setUnread(state)
-            } catch (err) {
-                console.log(`!!! setUnread errored:  ${err}`)
-            }
-            return state
-
-        default:
-            return state
-    }
-
-}
-
-
-export function display(state = initialState, action) {
-    // console.log(`reducer.DISPLAY: action.type: ${action.type} - state, action`)
-    switch (action.type) {
-        case UNREAD_MESSAGES:
             return {
                 ...state,
-                unreadMessages: action.unreadMessages
+                messages: action.messages
             }
 
-        case SELECTED_STYLE:
+        case SELECTING_MESSAGE:
             return {
                 ...state,
-                selectedStyle: action.selectedStyle
+                selectingMessage: true
             }
 
+        case MESSAGE_SELECTED:
+            return {
+                ...state,
+                selectingMessage: false
+            }
+
+        // case MARK_READ:
+        //     console.log("reducers.MARK_READ")
+        //     console.dir(state)
+        //     console.dir(messages)
+        //     try {
+        //         setRead(state)
+        //     } catch (err) {
+        //         console.log(`!!! setRead errored:  ${err}`)
+        //     }
+        //     return state
+
+        case DELETING_MESSAGES:
+            return {
+                ...state,
+                deletingMessages: true
+            }
+        case MESSAGES_DELETED:
+            return {
+                ...state,
+                deletingMessages: false
+            }
+
+        //
+        // case MARK_UNREAD:
+        //     console.log("reducers.MARK_UNREAD")
+        //     console.dir(state)
+        //     console.dir(messages)
+        //     try {
+        //         setUnread(state)
+        //     } catch (err) {
+        //         console.log(`!!! setUnread errored:  ${err}`)
+        //     }
+        //     return state
         case SHOW_COMPOSE:
             return {
                 ...state,
-                showCompose: !state.showCompose
+                showCompose: true
+            }
+        case HIDE_COMPOSE:
+            return {
+                ...state,
+                showCompose: false
+            }
+        case SELECTING_MESSAGES:
+            return {
+                ...state,
+                selectingMessages: true
+            }
+        case MESSAGES_SELECTED:
+            return {
+                ...state,
+                selectingMessages: false
             }
 
         default:
@@ -144,6 +127,7 @@ export function display(state = initialState, action) {
     }
 
 }
+
 
 // NOTE:  This added a level in state called "default" - ie, state.default.messages.messages...
 // export default combineReducers({

@@ -14,14 +14,29 @@ class App extends Component {
         super(props)
         console.log('App.ctor(): props:')
         console.dir(props)
-        this.showCompose = props.display.showCompose
+        this.messages = props.messages
+        this.messageArray = props.messages.messages
+        this.showCompose = props.showCompose
+
+        console.log(' .. this.messageArray: ')
+        console.dir(this.messageArray)
     }
 
-    componentWillReceiveProps = (nextProps) =>{
-        this.showCompose = nextProps.display.showCompose
+    componentWillUpdate(nextProps, nextState) {
+        this.messages = nextProps.messages
+        this.messageArray = nextProps.messages.messages
+        this.showCompose = nextProps.showCompose
+        console.log('Component WILL UPDATE!');
     }
+
+    componentWillReceiveProps(newProps) {
+        console.log('Component WILL RECIEVE PROPS!')
+    }
+
 
     render() {
+        console.log('> App.render()... - this.messageArray:')
+        console.dir(this.messageArray)
         return (
             <div className="App">
                 <div>
@@ -29,15 +44,15 @@ class App extends Component {
                 </div>
                 <div>
                     {this.showCompose && <ComposeMessage sendMessage={() => {
-                        console.log('add message')
+                        console.log('Compose Message component is being displayed')
                     }}/>}
                 </div>
                 <div>
                     <h3>Messages</h3>
                     {
-                        this.props.messages === undefined
+                        this.messageArray === undefined
                             ? 'Loading...'
-                            : <Messages messages={this.props.messages}/>
+                            : <Messages messages={this.messageArray}/>
                     }
                 </div>
             </div>
@@ -46,11 +61,11 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-    // console.log('>App.mapStateToProps - state: ')
-    // console.dir(state)
+    console.log('>App.mapStateToProps - state: ')
+    console.dir(state)
     return {
         messages: state.messages,
-        display: state.display
+        showCompose: state.messages.showCompose
     }
 }
 

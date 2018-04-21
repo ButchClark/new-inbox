@@ -1,10 +1,11 @@
 import React from 'react'
 import Message from './Message'
-import {connect} from 'react-redux'
+// import {connect} from 'react-redux'
 
 const Messages = ({messages}) => {
+    console.log("> Messages...")
     let response = "Loading..."
-    if (messages === undefined) {
+    if (messages=== undefined) {
         response = "Loading..."
     } else {
         if( Array.isArray(messages)) {
@@ -33,17 +34,21 @@ const Messages = ({messages}) => {
     )
 }
 
-const mapStateToProps = state => {
-    return{
-        messages: state.messages
-    }
-}
+// const mapStateToProps = state => {
+//     console.log("Messages.mapStateToProps - state:")
+//     console.dir(state)
+//     return{
+//         messages: state.messages.messages
+//     }
+// }
 
 // const mapDispatchToProps = dispatch => bindActionCreators({
 //     selectMessage: selectMessage()
 // }, dispatch)
 
-export default connect(
-    mapStateToProps,
-    null
-)(Messages)
+// export default connect(
+//     mapStateToProps,
+//     null
+// )(Messages)
+
+export default Messages

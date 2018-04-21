@@ -2,12 +2,9 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
 import {
+    selectMessages,
     deleteMessages,
     toggleShowCompose,
-    deselectAllMessages,
-    selectAllMessages,
-    markMessagesUnread,
-    markMessagesRead
 } from "../actions";
 
 import {bindActionCreators} from 'redux'
@@ -15,33 +12,57 @@ import {bindActionCreators} from 'redux'
 class Toolbar extends Component {
     constructor(props) {
         super(props)
-        this.selectedStyle = props.selectedStyle
+        this.messages = props.messages
+        this.messageArray = props.messages.messages
+        this.selectedStyle = NoneSelected
+        this.unreadMessages = 0
+        this.selectMessages = props.selectMessages
         this.showCompose = props.showCompose
-        this.unreadMessages = props.unreadMessages
         this.toggleShowCompose = props.toggleShowCompose
-        this.selectAllMessages = props.selectAllMessages
-        this.deselectAllMessages = props.deselectAllMessages
         this.markMessagesRead = props.markMessagesRead
         this.markMessagesUnread = props.markMessagesUnread
         this.deleteMessages = props.deleteMessages
-        console.log(`> Toolbar.ctor - props:`)
-        console.dir(props)
+        // console.log(`> Toolbar.ctor - props:`)
+        // console.dir(props)
+        this.setDisplayProperties(this.messageArray)
     }
 
     componentWillReceiveProps = (nextProps) =>{
-        this.selectedStyle = nextProps.selectedStyle
         this.showCompose = nextProps.showCompose
-        this.unreadMessages = nextProps.unreadMessages
+        this.messageArray = nextProps.messages.messages
+        this.setDisplayProperties(this.messageArray)
     }
 
-    handleSelectButton = () =>{
-        console.log(`TOOLBAR.handleSelectButton() - selectedStyle: ${this.selectedStyle}`)
-        if(this.selectedStyle === AllSelected){
-            this.deselectAllMessages()
-        }else{
-            this.selectAllMessages()
+    setDisplayProperties = (msgs) =>{
+        if(!msgs || msgs.length === 0){
+            this.unreadMessages = 0
+            this.selectedStyle = NoneSelected
+            return
         }
+        let unreadCount = 0
+        let selectedCount = 0
+        msgs.forEach((m) => {
+            if(m.selected === true){ selectedCount += 1 }
+            if(m.read !== true){ unreadCount += 1 }
+        })
+
+        if(selectedCount === 0){
+            this.selectedStyle = NoneSelected
+        }else if( selectedCount === msgs.length){
+            this.selectedStyle = AllSelected
+        }else {
+            this.selectedStyle = SomeSelected
+        }
+        this.unreadMessages = unreadCount
     }
+    // handleSelectButton = () =>{
+    //     console.log(`TOOLBAR.handleSelectButton() - selectedStyle: ${this.selectedStyle}`)
+    //     if(this.selectedStyle === AllSelected){
+    //         this.deselectAllMessages()
+    //     }else{
+    //         this.selectAllMessages()
+    //     }
+    // }
 
     handleMarkRead = async () =>{
         await this.markMessagesRead()
@@ -95,7 +116,7 @@ class Toolbar extends Component {
                     <a className="btn btn-danger" onClick={this.toggleShowCompose}>
                         <i className="fa fa-plus"></i>
                     </a>
-                    <button className="btn btn-default" onClick={this.handleSelectButton}>
+                    <button className="btn btn-default" onClick={this.selectMessages}>
                         <i className={selectedFormat}></i>
                     </button>
 
@@ -133,19 +154,14 @@ const mapStateToProps = (state) => {
     console.log('>Toolbar.mapStateToProps - state:')
     console.dir(state)
     return {
-        unreadMessages: state.display.unreadMessages,
-        messages: state.messages,
-        selectedStyle: state.selectedStyle
+        messages: state.messages
     }
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     toggleShowCompose: toggleShowCompose,
     deleteMessages: deleteMessages,
-    selectAllMessages: selectAllMessages,
-    deselectAllMessages: deselectAllMessages,
-    markMessagesRead: markMessagesRead,
-    markMessagesUnread: markMessagesUnread,
+    selectMessages: selectMessages
 }, dispatch)
 
 export default connect(

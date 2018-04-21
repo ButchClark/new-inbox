@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from "redux";
-import {selectMessage} from "../actions";
+import {selectMessage,starMessage} from "../actions";
 
 const starClickHandler = (e, upstreamHandler) => {
     e.preventDefault()
@@ -68,7 +68,8 @@ const Message = ({message, selectMessage, starHandler}) => {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    selectMessage: selectMessage
+    selectMessage: selectMessage,
+    starMessage: starMessage
 }, dispatch)
 
 export default connect(
