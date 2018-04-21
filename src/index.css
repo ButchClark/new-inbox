@@ -58,16 +58,13 @@ body {
   width: auto;
   display: inline;
 }
-.toolbar xxx{
-  background: aqua;
-}
+
 .toolbar select,
 .toolbar button,
 .toolbar a,
 .toolbar .badge {
   margin-right: .5em;
   margin-bottom: .5em;
-  background: #ffffcc;
 }
 
 footer.spacer {
@@ -81,3 +78,4 @@ footer.spacer {
 .fa-close {
   cursor: pointer;
 }
+
