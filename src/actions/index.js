@@ -94,11 +94,52 @@ export function getMessages() {
 // }
 
 export function deleteMessages() {
-    return async (dispatch) => {
+    return async (dispatch,getState) => {
         await dispatch({
             type: DELETING_MESSAGES
         })
-        // do stuff
+        const doFetch = async(theBody)=>{
+            await console.log(` deleteMessages.doFetch with body: ${JSON.stringify(theBody)}`)
+            try {
+                const response = await
+                    fetch(`/api/messages`, {
+                        method: 'PATCH',
+                        body: JSON.stringify(theBody),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        }
+                    })
+                await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
+            } catch (err) { console.log(`!! Error from PATCH call: ${err}`) }
+        }
+        // do deletes here
+        let msgs = getState().messages.messages
+        let selectedMsgIds = []
+        let selectedMsgIndexes = []
+        msgs.forEach((m,index)=>{ if(m.selected===true){
+            selectedMsgIds.push(m.id)
+            selectedMsgIndexes.push(index)
+        }})
+        // Remove all selected Msgs from array
+        selectedMsgIndexes = selectedMsgIndexes.sort((a,b) => b-a)
+        selectedMsgIndexes.forEach((indx) =>{
+            msgs.splice(indx, 1)
+        })
+        await console.log("msgs after array splice:")
+        await console.dir(msgs)
+
+        // Now send to API server for removal
+        let theBody = {
+            messageIds: selectedMsgIds,
+            command: "delete"
+        }
+        await doFetch(theBody)
+
+        await dispatch({
+            type: MESSAGES_UPDATED,
+            messages: msgs
+        })
         await dispatch({
             type: MESSAGES_DELETED
         })
