@@ -83,11 +83,6 @@ class Toolbar extends Component {
 
 
     render() {
-        const handler = (e) => {
-            console.log(`> Toolbar.handler - e: `)
-            console.dir(e.target)
-        }
-
         let disableThem = false
         if (this.selectedStyle === NoneSelected) disableThem = true
         let selectedFormat = 'fa '

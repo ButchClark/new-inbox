@@ -1,16 +1,19 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from "redux";
+import {addMessage} from "../actions";
 
-const addMessage = (e, addMessageHandler) => {
-    e.preventDefault()
-    addMessageHandler({
+const addMessageHandler = (e, addMessage) => {
+    // e.preventDefault()
+    addMessage({
         subject: e.target.subject.value,
         body: e.target.body.value
-    })
+    }).then(()=>{console.log('ComposeMessage.addMessageHandler(): - We just executed addMessage()')})
 }
-const ComposeMessage = ({sendMessage}) =>{
+const ComposeMessage = ({addMessage}) =>{
     return (
         <div>
-            <form className="form-horizontal well" onSubmit={(e)=> {addMessage(e,sendMessage)}}>
+            <form className="form-horizontal well" onSubmit={(e)=> {addMessageHandler(e,addMessage)}}>
                 <div className="form-group">
                     <div className="col-sm-8 col-sm-offset-2">
                         <h4>Compose Message</h4>
@@ -38,4 +41,11 @@ const ComposeMessage = ({sendMessage}) =>{
     )
 }
 
-export default ComposeMessage
+const mapDispatchToProps = dispatch => bindActionCreators({
+    addMessage: addMessage
+}, dispatch)
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(ComposeMessage)

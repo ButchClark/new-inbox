@@ -18,46 +18,6 @@ export const MESSAGES_DELETED = 'MESSAGES_DELETED'
 export const SHOW_COMPOSE = 'SHOW_COMPOSE'
 export const HIDE_COMPOSE = 'HIDE_COMPOSE'
 
-
-// export function updateMessages(msgs){
-//     console.log("> actions.updateMessages(msgs)")
-//     return async (dispatch) => {
-//         let unread = 0
-//         let numSelected = 0
-//         msgs.forEach((m) => {
-//             if (m.read === false) {
-//                 unread += 1
-//             }
-//             if (m.selected === true) {
-//                 numSelected += 1
-//             }
-//         })
-//         await dispatch({
-//             type: UNREAD_MESSAGES,
-//             unreadMessages: unread
-//         })
-//         let selectionType = NoneSelected
-//         if (numSelected === 0) {
-//             selectionType = NoneSelected
-//         }
-//         else if (numSelected === msgs.length) {
-//             selectionType = AllSelected
-//         }
-//         else selectionType = SomeSelected
-//         await console.log(`updateMessages - calling SELECTED_TYPE with: ${selectionType}`)
-//         await dispatch({
-//             type: SELECTED_STYLE,
-//             selectedStyle: selectionType
-//         })
-//
-//         dispatch({
-//                 type: MESSAGES_UPDATED,
-//                 messages: msgs
-//             }
-//         )
-//     }
-// }
-
 export function getMessages() {
     console.log("> actions.getMessages()")
     return async (dispatch) => {
@@ -92,13 +52,38 @@ export function getMessages() {
 //         getMessages()
 //     }
 // }
+export function addMessage(message) {
+    console.log(` actions.addMessage for message: ${JSON.stringify(message)}`)
+    return async (dispatch) => {
+        await dispatch({type: ADDING_MESSAGE})
+        const doFetch = async(theBody) =>{
+            await console.log(` addMessage.doFetch with body: ${JSON.stringify(theBody)}`)
+            try {
+                const response = await fetch(`/api/messages`, {
+                    method: 'POST',
+                    body: JSON.stringify(theBody),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                })
+                await console.log(`response from POST call: ${JSON.stringify(response)}`)
+            } catch (err) {
+                console.log(`!! Error from POST call: ${err}`)
+            }
+        }
+        await doFetch(message)
+        getMessages()
+        await dispatch({type: MESSAGE_ADDED})
+    }
+}
 
 export function deleteMessages() {
-    return async (dispatch,getState) => {
+    return async (dispatch, getState) => {
         await dispatch({
             type: DELETING_MESSAGES
         })
-        const doFetch = async(theBody)=>{
+        const doFetch = async (theBody) => {
             await console.log(` deleteMessages.doFetch with body: ${JSON.stringify(theBody)}`)
             try {
                 const response = await
@@ -111,19 +96,23 @@ export function deleteMessages() {
                         }
                     })
                 await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
-            } catch (err) { console.log(`!! Error from PATCH call: ${err}`) }
+            } catch (err) {
+                console.log(`!! Error from PATCH call: ${err}`)
+            }
         }
         // do deletes here
         let msgs = getState().messages.messages
         let selectedMsgIds = []
         let selectedMsgIndexes = []
-        msgs.forEach((m,index)=>{ if(m.selected===true){
-            selectedMsgIds.push(m.id)
-            selectedMsgIndexes.push(index)
-        }})
+        msgs.forEach((m, index) => {
+            if (m.selected === true) {
+                selectedMsgIds.push(m.id)
+                selectedMsgIndexes.push(index)
+            }
+        })
         // Remove all selected Msgs from array
-        selectedMsgIndexes = selectedMsgIndexes.sort((a,b) => b-a)
-        selectedMsgIndexes.forEach((indx) =>{
+        selectedMsgIndexes = selectedMsgIndexes.sort((a, b) => b - a)
+        selectedMsgIndexes.forEach((indx) => {
             msgs.splice(indx, 1)
         })
         await console.log("msgs after array splice:")
@@ -187,15 +176,15 @@ export function selectMessages() {
 
 export function applyLabel(label) {
     console.log(`actions.ApplyLabels( ${label} )`)
-    if (!label || label === "Apply label"){
-        return async()=> {
+    if (!label || label === "Apply label") {
+        return async () => {
             await console.log(' .. Returning because no label sent in')
         }
     }
 
     return async (dispatch, getState) => {
         await dispatch({type: APPLYING_LABEL})
-        const doFetch = async(theBody)=>{
+        const doFetch = async (theBody) => {
             await console.log(` applyLabels.doFetch with body: ${theBody}`)
             try {
                 const response = await
@@ -208,11 +197,13 @@ export function applyLabel(label) {
                         }
                     })
                 await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
-            } catch (err) { console.log(`!! Error from PATCH call: ${err}`) }
+            } catch (err) {
+                console.log(`!! Error from PATCH call: ${err}`)
+            }
         }
 
         let msgs = getState().messages.messages
-        msgs.forEach(async(msg) => {
+        msgs.forEach(async (msg) => {
             if (msg.selected === true) {
                 // await console.log(`message id: ${msg.id} - msg.labels, labels: `)
                 // await console.dir(msg.labels)
@@ -238,15 +229,15 @@ export function applyLabel(label) {
 
 export function removeLabel(label) {
     console.log(`actions.ApplyLabels( ${label} )`)
-    if (!label || label === "Remove label"){
-        return async()=> {
+    if (!label || label === "Remove label") {
+        return async () => {
             await console.log(' .. Returning because no label sent in')
         }
     }
 
     return async (dispatch, getState) => {
         await dispatch({type: REMOVING_LABEL})
-        const doFetch = async(theBody)=>{
+        const doFetch = async (theBody) => {
             await console.log(` removeLabel.doFetch with body: ${theBody}`)
             try {
                 const response = await
@@ -259,11 +250,13 @@ export function removeLabel(label) {
                         }
                     })
                 await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
-            } catch (err) { console.log(`!! Error from PATCH call: ${err}`) }
+            } catch (err) {
+                console.log(`!! Error from PATCH call: ${err}`)
+            }
         }
 
         let msgs = getState().messages.messages
-        msgs.forEach(async(msg) => {
+        msgs.forEach(async (msg) => {
             if (msg.selected === true) {
                 // await console.log(`message id: ${msg.id} - msg.labels, labels: `)
                 // await console.dir(msg.labels)
@@ -271,8 +264,8 @@ export function removeLabel(label) {
                 //apply labels to this guy
                 if (msg.labels.includes(label)) {
                     let indx = msg.labels.indexOf(label)
-                    if(indx > -1) {
-                        msg.labels.splice(indx,1)
+                    if (indx > -1) {
+                        msg.labels.splice(indx, 1)
                         // Now PATCH it on the API server
                         let theBody = JSON.stringify({
                             messageIds: [msg.id],
@@ -338,148 +331,3 @@ export function starMessage(messageId) {
     }
 }
 
-// export function selectAllMessages() {
-//     return async (dispatch) => {
-//
-//         await dispatch({
-//             type: SELECT_ALL_MESSAGES
-//         })
-//     }
-// }
-
-// export function deselectAllMessages() {
-//     console.log("actions.deselectAllMessages()")
-//     return async (dispatch) => {
-//         dispatch({
-//             type: DESELECT_ALL_MESSAGES
-//         })
-//     }
-// }
-
-export function executeDeleteMessages(messages) {
-    if (!messages || messages.length === 0) {
-        return []
-    }
-
-    let messageIds = []
-    messages.forEach((m) => {
-        if (m.selected === true) {
-            messageIds.push(m.id)
-        }
-    })
-    console.log(`messageIds: ${messageIds}`)
-    const callPatch = async (messageIds) => {
-
-        let theBody = JSON.stringify(
-            {
-                messageIds,
-                command: "delete"
-            }
-        )
-
-        console.log("PATCH (for delete) Body to be sent:")
-        console.log(theBody)
-
-        try {
-            const response = await fetch(`/api/messages`, {
-                method: 'PATCH',
-                body: theBody,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            })
-            await console.log(`response from PATCH call: ${response}`)
-        } catch (err) {
-            console.log(`!! Error from PATCH call: ${err}`)
-        }
-    }
-    callPatch(messageIds)
-    console.log('after callPatch()')
-}
-
-export function setRead(messages) {
-    if (!messages || messages.length === 0) {
-        return []
-    }
-
-    let messageIds = []
-    messages.forEach((m) => {
-        if (m.selected === true) {
-            messageIds.push(m.id)
-        }
-    })
-    console.log(`messageIds: ${messageIds}`)
-    const callPatch = async (messageIds) => {
-
-        let theBody = JSON.stringify(
-            {
-                messageIds,
-                command: "read",
-                read: true
-            }
-        )
-
-        console.log("PATCH Body to be sent:")
-        console.log(theBody)
-
-        try {
-            const response = await fetch(`/api/messages`, {
-                method: 'PATCH',
-                body: theBody,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            })
-            await console.log(`response from PATCH call: ${response}`)
-        } catch (err) {
-            console.log(`!! Error from PATCH call: ${err}`)
-        }
-    }
-    callPatch(messageIds)
-    console.log('after callPatch()')
-}
-
-export function setUnread(messages) {
-    if (!messages || messages.length === 0) {
-        return []
-    }
-
-    let messageIds = []
-    messages.forEach((m) => {
-        if (m.selected === true) {
-            messageIds.push(m.id)
-        }
-    })
-    console.log(`messageIds: ${messageIds}`)
-    const callPatch = async (messageIds) => {
-
-        let theBody = JSON.stringify(
-            {
-                messageIds,
-                command: "read",
-                read: false
-            }
-        )
-
-        console.log("PATCH Body to be sent:")
-        console.log(theBody)
-
-        try {
-            const response = await fetch(`/api/messages`, {
-                method: 'PATCH',
-                body: theBody,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            })
-            await console.log(`response from PATCH call: ${response}`)
-        } catch (err) {
-            console.log(`!! Error from PATCH call: ${err}`)
-        }
-    }
-    callPatch(messageIds)
-    console.log('after callPatch()')
-}
