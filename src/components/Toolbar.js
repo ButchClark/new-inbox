@@ -1,11 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
-import {
-    selectMessages,
-    deleteMessages,
-    toggleShowCompose,
-} from "../actions";
+import {applyLabel, removeLabel, deleteMessages, selectMessages, toggleShowCompose,} from "../actions";
 
 import {bindActionCreators} from 'redux'
 
@@ -14,6 +10,8 @@ class Toolbar extends Component {
         super(props)
         this.messages = props.messages
         this.messageArray = props.messages.messages
+        this.applyLabel = props.applyLabel
+        this.removeLabel= props.removeLabel
         this.selectedStyle = NoneSelected
         this.unreadMessages = 0
         this.selectMessages = props.selectMessages
@@ -27,14 +25,14 @@ class Toolbar extends Component {
         this.setDisplayProperties(this.messageArray)
     }
 
-    componentWillReceiveProps = (nextProps) =>{
+    componentWillReceiveProps = (nextProps) => {
         this.showCompose = nextProps.showCompose
         this.messageArray = nextProps.messages.messages
         this.setDisplayProperties(this.messageArray)
     }
 
-    setDisplayProperties = (msgs) =>{
-        if(!msgs || msgs.length === 0){
+    setDisplayProperties = (msgs) => {
+        if (!msgs || msgs.length === 0) {
             this.unreadMessages = 0
             this.selectedStyle = NoneSelected
             return
@@ -42,15 +40,19 @@ class Toolbar extends Component {
         let unreadCount = 0
         let selectedCount = 0
         msgs.forEach((m) => {
-            if(m.selected === true){ selectedCount += 1 }
-            if(m.read !== true){ unreadCount += 1 }
+            if (m.selected === true) {
+                selectedCount += 1
+            }
+            if (m.read !== true) {
+                unreadCount += 1
+            }
         })
 
-        if(selectedCount === 0){
+        if (selectedCount === 0) {
             this.selectedStyle = NoneSelected
-        }else if( selectedCount === msgs.length){
+        } else if (selectedCount === msgs.length) {
             this.selectedStyle = AllSelected
-        }else {
+        } else {
             this.selectedStyle = SomeSelected
         }
         this.unreadMessages = unreadCount
@@ -64,17 +66,17 @@ class Toolbar extends Component {
     //     }
     // }
 
-    handleMarkRead = async () =>{
+    handleMarkRead = async () => {
         await this.markMessagesRead()
         await console.log('handleMarkRead: after markMessagesRead()')
     }
 
-    handleMarkUnread = async () =>{
+    handleMarkUnread = async () => {
         await this.markMessagesUnread()
         await console.log('handleMarkUnread: after markMessagesUnread()')
     }
 
-    handleDeleteMessages = async() =>{
+    handleDeleteMessages = async () => {
         await this.deleteMessages()
         await console.log('handleDeleteMessages: after deleteMessages()')
     }
@@ -87,9 +89,9 @@ class Toolbar extends Component {
         }
 
         let disableThem = false
-        if (this.selectedStyle === NoneSelected ) disableThem = true
+        if (this.selectedStyle === NoneSelected) disableThem = true
         let selectedFormat = 'fa '
-        if (this.selectedStyle === AllSelected ) {
+        if (this.selectedStyle === AllSelected) {
             selectedFormat += 'fa-check-square-o'
         }
         else if (this.selectedStyle === SomeSelected) {
@@ -120,11 +122,11 @@ class Toolbar extends Component {
                         <i className={selectedFormat}></i>
                     </button>
 
-                    <button {...markAsProps} onClick={this.handleMarkRead}>Mark As Read </button>
-                    <button {...markAsProps} onClick={this.handleMarkUnread}>Mark As Unread </button>
+                    <button {...markAsProps} onClick={this.handleMarkRead}>Mark As Read</button>
+                    <button {...markAsProps} onClick={this.handleMarkUnread}>Mark As Unread</button>
 
                     <select {...selectProps} onChange={(e) => {
-                        handler(e)
+                        this.applyLabel(e.currentTarget.value)
                     }}>
                         <option>Apply label</option>
                         <option value="dev">dev</option>
@@ -133,7 +135,7 @@ class Toolbar extends Component {
                     </select>
 
                     <select {...selectProps} onChange={(e) => {
-                        handler(e)
+                        this.removeLabel(e.currentTarget.value)
                     }}>
                         <option>Remove label</option>
                         <option value="dev">dev</option>
@@ -161,7 +163,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => bindActionCreators({
     toggleShowCompose: toggleShowCompose,
     deleteMessages: deleteMessages,
-    selectMessages: selectMessages
+    selectMessages: selectMessages,
+    applyLabel: applyLabel,
+    removeLabel: removeLabel
 }, dispatch)
 
 export default connect(

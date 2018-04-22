@@ -9,10 +9,10 @@ export const STARRING_MESSAGE = 'STARRING_MESSAGE'
 export const MESSAGE_STARRED = 'MESSAGE_STARRED'
 export const ADDING_MESSAGE = 'ADDING_MESSAGE'
 export const MESSAGE_ADDED = 'MESSAGE_ADDED'
-export const APPLYING_LABELS = 'APPLYING_LABELS'
-export const LABELS_APPLIED = 'LABELS_APPLIED'
-export const REMOVING_LABELS = 'REMOVING_LABELS'
-export const LABELS_REMOVED = 'LABELS_REMOVED'
+export const APPLYING_LABEL = 'APPLYING_LABEL'
+export const LABEL_APPLIED = 'LABEL_APPLIED'
+export const REMOVING_LABEL = 'REMOVING_LABEL'
+export const LABEL_REMOVED = 'LABEL_REMOVED'
 export const DELETING_MESSAGES = 'DELETING_MESSAGES'
 export const MESSAGES_DELETED = 'MESSAGES_DELETED'
 export const SHOW_COMPOSE = 'SHOW_COMPOSE'
@@ -118,21 +118,134 @@ export function toggleShowCompose() {
     }
 }
 
-export function selectMessages(){
-    return async(dispatch,getState) =>{
+export function selectMessages() {
+    return async (dispatch, getState) => {
         await dispatch({type: SELECTING_MESSAGES})
         let msgs = getState().messages.messages
         let selectedCount = 0
-        msgs.forEach((m)=>{ if(m.selected === true){ selectedCount += 1} })
-        if(selectedCount === msgs.length){
-           // all currently selected, so deselect them all
-           msgs.forEach((m) =>{ m.selected = false })
-        }else{
+        msgs.forEach((m) => {
+            if (m.selected === true) {
+                selectedCount += 1
+            }
+        })
+        if (selectedCount === msgs.length) {
+            // all currently selected, so deselect them all
+            msgs.forEach((m) => {
+                m.selected = false
+            })
+        } else {
             // some or none currently selected, so select them all
-            msgs.forEach((m) =>{ m.selected = true })
+            msgs.forEach((m) => {
+                m.selected = true
+            })
         }
         await dispatch({type: MESSAGES_UPDATED, messages: msgs})
         await dispatch({type: MESSAGES_SELECTED})
+    }
+}
+
+export function applyLabel(label) {
+    console.log(`actions.ApplyLabels( ${label} )`)
+    if (!label || label === "Apply label"){
+        return async()=> {
+            await console.log(' .. Returning because no label sent in')
+        }
+    }
+
+    return async (dispatch, getState) => {
+        await dispatch({type: APPLYING_LABEL})
+        const doFetch = async(theBody)=>{
+            await console.log(` applyLabels.doFetch with body: ${theBody}`)
+            try {
+                const response = await
+                    fetch(`/api/messages`, {
+                        method: 'PATCH',
+                        body: theBody,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        }
+                    })
+                await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
+            } catch (err) { console.log(`!! Error from PATCH call: ${err}`) }
+        }
+
+        let msgs = getState().messages.messages
+        msgs.forEach(async(msg) => {
+            if (msg.selected === true) {
+                // await console.log(`message id: ${msg.id} - msg.labels, labels: `)
+                // await console.dir(msg.labels)
+                // await console.dir(label)
+                //apply labels to this guy
+                if (!msg.labels.includes(label)) {
+                    msg.labels.push(label)
+                    // Now PATCH it on the API server
+                    let theBody = JSON.stringify({
+                        messageIds: [msg.id],
+                        command: "addLabel",
+                        label: label
+                    })
+                    await doFetch(theBody)
+                }
+            }
+        })
+        await console.log(`calling MESSAGES_UPDATED with msgs: ${JSON.stringify(msgs)}`)
+        await dispatch({type: MESSAGES_UPDATED, messages: msgs})
+        await dispatch({type: LABEL_APPLIED})
+    }
+}
+
+export function removeLabel(label) {
+    console.log(`actions.ApplyLabels( ${label} )`)
+    if (!label || label === "Remove label"){
+        return async()=> {
+            await console.log(' .. Returning because no label sent in')
+        }
+    }
+
+    return async (dispatch, getState) => {
+        await dispatch({type: REMOVING_LABEL})
+        const doFetch = async(theBody)=>{
+            await console.log(` removeLabel.doFetch with body: ${theBody}`)
+            try {
+                const response = await
+                    fetch(`/api/messages`, {
+                        method: 'PATCH',
+                        body: theBody,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        }
+                    })
+                await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
+            } catch (err) { console.log(`!! Error from PATCH call: ${err}`) }
+        }
+
+        let msgs = getState().messages.messages
+        msgs.forEach(async(msg) => {
+            if (msg.selected === true) {
+                // await console.log(`message id: ${msg.id} - msg.labels, labels: `)
+                // await console.dir(msg.labels)
+                // await console.dir(label)
+                //apply labels to this guy
+                if (msg.labels.includes(label)) {
+                    let indx = msg.labels.indexOf(label)
+                    if(indx > -1) {
+                        msg.labels.splice(indx,1)
+                        // Now PATCH it on the API server
+                        let theBody = JSON.stringify({
+                            messageIds: [msg.id],
+                            command: "removeLabel",
+                            label: label
+                        })
+                        await doFetch(theBody)
+                    }
+                }
+            }
+        })
+        await console.log(`calling MESSAGES_UPDATED with msgs: ${JSON.stringify(msgs)}`)
+        await dispatch({type: MESSAGES_UPDATED, messages: msgs})
+        await dispatch({type: LABEL_REMOVED})
     }
 }
 
