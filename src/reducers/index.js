@@ -8,6 +8,8 @@ import {
     MESSAGES_UPDATED,
     SELECTING_MESSAGE,
     SELECTING_MESSAGES,
+    STARRING_MESSAGE,
+    MESSAGE_STARRED,
     SHOW_COMPOSE
 } from "../actions";
 
@@ -67,7 +69,17 @@ export function messages(state = initialState, action) {
                 ...state,
                 selectingMessage: false
             }
+        case STARRING_MESSAGE:
+            return {
+                ...state,
+                starringMessage: true
+            }
 
+        case MESSAGE_STARRED:
+            return {
+                ...state,
+                starringMessage: false
+            }
         // case MARK_READ:
         //     console.log("reducers.MARK_READ")
         //     console.dir(state)

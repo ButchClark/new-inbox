@@ -306,9 +306,12 @@ export function selectMessage(messageId) {
 }
 
 export function starMessage(messageId) {
+    if( !messageId){
+        console.log("!!!! starMessage() - received undefined messageId")
+    }
     return async (dispatch, getState) => {
-        let msgs = getState.messages
-        await console.log(`actions.selectMessage() - messages`)
+        let msgs = getState().messages.messages
+        await console.log(`actions.starMessage() - messages`)
         await console.dir(msgs)
         await dispatch({
             type: STARRING_MESSAGE,
@@ -324,7 +327,7 @@ export function starMessage(messageId) {
             messages: msgs
         })
         await dispatch({
-            type: STARRING_MESSAGE,
+            type: MESSAGE_STARRED,
             messageId: messageId
         })
 

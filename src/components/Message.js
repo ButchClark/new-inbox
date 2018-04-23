@@ -3,26 +3,26 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from "redux";
 import {selectMessage,starMessage} from "../actions";
 
-const starClickHandler = (e, upstreamHandler) => {
-    e.preventDefault()
-    if(!upstreamHandler){
-        console.log("Message.starClickHandler: upstreamHandler is NULL/empty")
-    }
+// const starClickHandler = (e, upstreamHandler) => {
+//     e.preventDefault()
+//     if(!upstreamHandler){
+//         console.log("Message.starClickHandler: upstreamHandler is NULL/empty")
+//     }
+//
+//     // ------------------------------------------
+//     // sending data on the event object.
+//     // Accessed as:  e.target.dataset.myvarname
+//     // Set like this on a component:
+//     //   <Thing data-myvarname="XYZ" ...
+//     // ------------------------------------------
+//     console.log(`Message.starClickHandler for msg: ${e.target.dataset.messagenum}`)
+//     console.log('Calling upstreamHandler()')
+//     upstreamHandler(e.target.dataset.messagenum)
+//     console.log(`After calling upstreamHandler`)
+//
+// }
 
-    // ------------------------------------------
-    // sending data on the event object.
-    // Accessed as:  e.target.dataset.myvarname
-    // Set like this on a component:
-    //   <Thing data-myvarname="XYZ" ...
-    // ------------------------------------------
-    console.log(`Message.starClickHandler for msg: ${e.target.dataset.messagenum}`)
-    console.log('Calling upstreamHandler()')
-    upstreamHandler(e.target.dataset.messagenum)
-    console.log(`After calling upstreamHandler`)
-
-}
-
-const Message = ({message, selectMessage, starHandler}) => {
+const Message = ({message, selectMessage, starMessage}) => {
     let rowFormat = "row message "
     rowFormat += message.read ? "read " : "unread "
     rowFormat += message.selected ? "selected " : ""
@@ -46,9 +46,7 @@ const Message = ({message, selectMessage, starHandler}) => {
                            data-messagenum={message.id}
                            data-msg="MyMsg"
                            value={message.id}
-                           onClick={(e) => {
-                               starClickHandler(e, starHandler)
-                           }}
+                           onClick={(e) => {starMessage(e.target.dataset.messagenum)}}
                            className={msgstarred}/>
                     </div>
                 </div>
