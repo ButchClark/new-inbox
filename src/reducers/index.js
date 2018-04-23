@@ -10,6 +10,10 @@ import {
     SELECTING_MESSAGES,
     STARRING_MESSAGE,
     MESSAGE_STARRED,
+    SETTING_MESSAGES_TO_READ,
+    MESSAGES_SET_TO_READ,
+    SETTING_MESSAGES_TO_UNREAD,
+    MESSAGES_SET_TO_UNREAD,
     SHOW_COMPOSE
 } from "../actions";
 
@@ -132,6 +136,26 @@ export function messages(state = initialState, action) {
             return {
                 ...state,
                 selectingMessages: false
+            }
+        case SETTING_MESSAGES_TO_READ:
+            return {
+                ...state,
+                settingMessagesToRead: true
+            }
+        case MESSAGES_SET_TO_READ:
+            return {
+                ...state,
+                settingMessagesToRead: false
+            }
+        case SETTING_MESSAGES_TO_UNREAD:
+            return {
+                ...state,
+                settingMessagesToUnread: true
+            }
+        case MESSAGES_SET_TO_UNREAD:
+            return {
+                ...state,
+                settingMessagesToUnread: false
             }
 
         default:

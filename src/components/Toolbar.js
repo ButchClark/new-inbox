@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
-import {applyLabel, removeLabel, deleteMessages, selectMessages, toggleShowCompose,} from "../actions";
+import {applyLabel, removeLabel, deleteMessages, selectMessages, toggleShowCompose, setMessagesRead,} from "../actions";
 
 import {bindActionCreators} from 'redux'
 
@@ -17,9 +17,8 @@ class Toolbar extends Component {
         this.selectMessages = props.selectMessages
         this.showCompose = props.showCompose
         this.toggleShowCompose = props.toggleShowCompose
-        this.markMessagesRead = props.markMessagesRead
-        this.markMessagesUnread = props.markMessagesUnread
         this.deleteMessages = props.deleteMessages
+        this.setMessagesRead = props.setMessagesRead
         // console.log(`> Toolbar.ctor - props:`)
         // console.dir(props)
         this.setDisplayProperties(this.messageArray)
@@ -117,7 +116,7 @@ class Toolbar extends Component {
                         <i className={selectedFormat}></i>
                     </button>
 
-                    <button {...markAsProps} onClick={this.handleMarkRead}>Mark As Read</button>
+                    <button {...markAsProps} onClick={this.setMessagesRead}>Mark As Read</button>
                     <button {...markAsProps} onClick={this.handleMarkUnread}>Mark As Unread</button>
 
                     <select {...selectProps} onChange={(e) => {
@@ -160,7 +159,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     deleteMessages: deleteMessages,
     selectMessages: selectMessages,
     applyLabel: applyLabel,
-    removeLabel: removeLabel
+    removeLabel: removeLabel,
+    setMessagesRead: setMessagesRead
 }, dispatch)
 
 export default connect(
