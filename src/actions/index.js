@@ -308,6 +308,7 @@ export function selectMessage(messageId) {
         await dispatch({type: MESSAGE_SELECTED})
     }
 }
+
 export function setMessagesRead(){
     return async (dispatch,getState) => {
         await dispatch({type: SETTING_MESSAGES_TO_READ})
@@ -340,13 +341,56 @@ export function setMessagesRead(){
 
         let theBody = {
             messageIds: selectedMsgIds,
-            command: "delete"
+            command: "read",
+            read: true
         }
         await doFetch(theBody)
         await dispatch({type: MESSAGES_UPDATED, messages: msgs})
         await dispatch({type: MESSAGES_SET_TO_READ})
     }
 }
+
+export function setMessagesUnread(){
+    return async (dispatch,getState) => {
+        await dispatch({type: SETTING_MESSAGES_TO_UNREAD})
+        let msgs = getState().messages.messages
+
+        const doFetch = async (theBody) => {
+            await console.log(` setMessagesUnread.doFetch with body: ${JSON.stringify(theBody)}`)
+            try {
+                const response = await
+                    fetch(`/api/messages`, {
+                        method: 'PATCH',
+                        body: JSON.stringify(theBody),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        }
+                    })
+                await console.log(`response from PATCH call: ${JSON.stringify(response)}`)
+            } catch (err) {
+                console.log(`!! Error from PATCH call: ${err}`)
+            }
+        }
+        let selectedMsgIds = []
+        msgs.forEach(async(msg)=>{
+            if(msg.selected===true){
+                msg.read = false
+                selectedMsgIds.push(msg.id)
+            }
+        })
+
+        let theBody = {
+            messageIds: selectedMsgIds,
+            command: "read",
+            read: false
+        }
+        await doFetch(theBody)
+        await dispatch({type: MESSAGES_UPDATED, messages: msgs})
+        await dispatch({type: MESSAGES_SET_TO_UNREAD})
+    }
+}
+
 export function starMessage(messageId) {
     if( !messageId){
         console.log("!!!! starMessage() - received undefined messageId")

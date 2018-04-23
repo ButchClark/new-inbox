@@ -1,7 +1,15 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {AllSelected, NoneSelected, SomeSelected} from "../App";
-import {applyLabel, removeLabel, deleteMessages, selectMessages, toggleShowCompose, setMessagesRead,} from "../actions";
+import {
+    applyLabel,
+    removeLabel,
+    deleteMessages,
+    selectMessages,
+    toggleShowCompose,
+    setMessagesRead,
+    setMessagesUnread,
+} from "../actions";
 
 import {bindActionCreators} from 'redux'
 
@@ -19,6 +27,7 @@ class Toolbar extends Component {
         this.toggleShowCompose = props.toggleShowCompose
         this.deleteMessages = props.deleteMessages
         this.setMessagesRead = props.setMessagesRead
+        this.setMessagesUnread = props.setMessagesUnread
         // console.log(`> Toolbar.ctor - props:`)
         // console.dir(props)
         this.setDisplayProperties(this.messageArray)
@@ -56,21 +65,8 @@ class Toolbar extends Component {
         }
         this.unreadMessages = unreadCount
     }
-    // handleSelectButton = () =>{
-    //     console.log(`TOOLBAR.handleSelectButton() - selectedStyle: ${this.selectedStyle}`)
-    //     if(this.selectedStyle === AllSelected){
-    //         this.deselectAllMessages()
-    //     }else{
-    //         this.selectAllMessages()
-    //     }
-    // }
 
-    handleMarkRead = async () => {
-        await this.markMessagesRead()
-        await console.log('handleMarkRead: after markMessagesRead()')
-    }
-
-    handleMarkUnread = async () => {
+   handleMarkUnread = async () => {
         await this.markMessagesUnread()
         await console.log('handleMarkUnread: after markMessagesUnread()')
     }
@@ -117,7 +113,7 @@ class Toolbar extends Component {
                     </button>
 
                     <button {...markAsProps} onClick={this.setMessagesRead}>Mark As Read</button>
-                    <button {...markAsProps} onClick={this.handleMarkUnread}>Mark As Unread</button>
+                    <button {...markAsProps} onClick={this.setMessagesUnread}>Mark As Unread</button>
 
                     <select {...selectProps} onChange={(e) => {
                         this.applyLabel(e.currentTarget.value)
@@ -160,7 +156,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     selectMessages: selectMessages,
     applyLabel: applyLabel,
     removeLabel: removeLabel,
-    setMessagesRead: setMessagesRead
+    setMessagesRead: setMessagesRead,
+    setMessagesUnread: setMessagesUnread
 }, dispatch)
 
 export default connect(
